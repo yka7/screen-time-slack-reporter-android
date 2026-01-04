@@ -235,7 +235,7 @@ private fun TotalTimeCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = if (hasUsage) totalTime else "0分",
+                text = if (hasUsage) totalTime else stringResource(R.string.home_total_time_zero),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer

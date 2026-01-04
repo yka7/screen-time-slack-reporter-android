@@ -61,7 +61,7 @@ fun ExclusionsScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "戻る"
+                            contentDescription = stringResource(R.string.nav_back)
                         )
                     }
                 },
@@ -233,7 +233,7 @@ private fun AppExclusionItem(
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "対象外",
+                    text = stringResource(R.string.exclusions_switch_label),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
