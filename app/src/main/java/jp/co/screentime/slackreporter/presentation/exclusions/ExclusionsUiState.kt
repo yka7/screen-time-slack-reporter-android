@@ -8,7 +8,8 @@ import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
 data class ExclusionsUiState(
     val isLoading: Boolean = true,
     val apps: List<UiAppUsage> = emptyList(),
-    val showExcludedOnly: Boolean = false
+    val showExcludedOnly: Boolean = false,
+    val errorMessage: String? = null
 ) {
     /**
      * フィルタ適用後のアプリ一覧

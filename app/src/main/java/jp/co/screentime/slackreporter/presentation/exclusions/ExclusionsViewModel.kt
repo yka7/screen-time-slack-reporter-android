@@ -1,8 +1,11 @@
 package jp.co.screentime.slackreporter.presentation.exclusions
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import jp.co.screentime.slackreporter.R
 import jp.co.screentime.slackreporter.data.repository.SettingsRepository
 import jp.co.screentime.slackreporter.domain.usecase.GetAllAppsUseCase
 import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsedAppsUseCase
@@ -17,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExclusionsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getAllAppsUseCase: GetAllAppsUseCase,
     private val getTodayUsedAppsUseCase: GetTodayUsedAppsUseCase,
     private val settingsRepository: SettingsRepository
@@ -31,7 +35,7 @@ class ExclusionsViewModel @Inject constructor(
 
     private fun loadData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
                 val allApps = getAllAppsUseCase()
@@ -59,12 +63,18 @@ class ExclusionsViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             apps = apps,
-                            showExcludedOnly = showExcludedOnly
+                            showExcludedOnly = showExcludedOnly,
+                            errorMessage = null
                         )
                     }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message ?: context.getString(R.string.exclusions_load_failed)
+                    )
+                }
             }
         }
     }

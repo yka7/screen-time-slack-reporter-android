@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -421,9 +422,12 @@ private fun OtherAppsItem(duration: String) {
 
 @Composable
 private fun AppIcon(icon: Drawable?, modifier: Modifier = Modifier) {
-    if (icon != null) {
+    val bitmap = remember(icon) {
+        icon?.toBitmap(width = 80, height = 80)?.asImageBitmap()
+    }
+    if (bitmap != null) {
         Image(
-            bitmap = icon.toBitmap(width = 80, height = 80).asImageBitmap(),
+            bitmap = bitmap,
             contentDescription = null,
             modifier = modifier
         )

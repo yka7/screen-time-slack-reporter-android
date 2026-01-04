@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -124,6 +125,15 @@ private fun ExclusionsContent(
                     onCheckedChange = onShowExcludedOnlyChanged
                 )
             }
+        }
+
+        uiState.errorMessage?.let { message ->
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
 
         // アプリ一覧 or 空状態
@@ -224,9 +234,12 @@ private fun AppIcon(
     icon: Drawable?,
     modifier: Modifier = Modifier
 ) {
-    if (icon != null) {
+    val bitmap = remember(icon) {
+        icon?.toBitmap(width = 80, height = 80)?.asImageBitmap()
+    }
+    if (bitmap != null) {
         Image(
-            bitmap = icon.toBitmap(width = 80, height = 80).asImageBitmap(),
+            bitmap = bitmap,
             contentDescription = null,
             modifier = modifier
         )

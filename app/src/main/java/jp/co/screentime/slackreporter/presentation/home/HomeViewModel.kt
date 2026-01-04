@@ -10,12 +10,15 @@ import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsageUseCase
 import jp.co.screentime.slackreporter.domain.usecase.SendDailyReportUseCase
 import jp.co.screentime.slackreporter.platform.AppLabelResolver
 import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,26 +73,30 @@ class HomeViewModel @Inject constructor(
                 val usageList = getTodayUsageUseCase()
 
                 // 除外適用
-                settings.collect { currentSettings ->
-                    val filteredUsage = usageList.filter { usage ->
-                        usage.packageName !in currentSettings.excludedPackages
+                settings.collectLatest { currentSettings ->
+                    val (topApps, totalDurationMillis, otherDurationMillis) = withContext(Dispatchers.IO) {
+                        val filteredUsage = usageList.filter { usage ->
+                            usage.packageName !in currentSettings.excludedPackages
+                        }
+
+                        val topApps = filteredUsage.take(TOP_APPS_COUNT).map { usage ->
+                            UiAppUsage(
+                                packageName = usage.packageName,
+                                appName = appLabelResolver.getAppLabel(usage.packageName),
+                                icon = appLabelResolver.getAppIcon(usage.packageName),
+                                durationMinutes = usage.durationMinutes,
+                                isExcluded = false
+                            )
+                        }
+
+                        val otherDurationMillis = filteredUsage
+                            .drop(TOP_APPS_COUNT)
+                            .sumOf { it.durationMillis }
+
+                        val totalDurationMillis = filteredUsage.sumOf { it.durationMillis }
+
+                        Triple(topApps, totalDurationMillis, otherDurationMillis)
                     }
-
-                    val topApps = filteredUsage.take(TOP_APPS_COUNT).map { usage ->
-                        UiAppUsage(
-                            packageName = usage.packageName,
-                            appName = appLabelResolver.getAppLabel(usage.packageName),
-                            icon = appLabelResolver.getAppIcon(usage.packageName),
-                            durationMinutes = usage.durationMinutes,
-                            isExcluded = false
-                        )
-                    }
-
-                    val otherDurationMillis = filteredUsage
-                        .drop(TOP_APPS_COUNT)
-                        .sumOf { it.durationMillis }
-
-                    val totalDurationMillis = filteredUsage.sumOf { it.durationMillis }
 
                     _uiState.update {
                         it.copy(

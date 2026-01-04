@@ -26,6 +26,7 @@ class AppLabelResolver @Inject constructor(
      * @param packageName パッケージ名
      * @return アプリ名（取得できない場合はパッケージ名）
      */
+    @Synchronized
     fun getAppLabel(packageName: String): String {
         return labelCache.getOrPut(packageName) {
             try {
@@ -43,6 +44,7 @@ class AppLabelResolver @Inject constructor(
      * @param packageName パッケージ名
      * @return アプリアイコン（取得できない場合はnull）
      */
+    @Synchronized
     fun getAppIcon(packageName: String): Drawable? {
         return iconCache.getOrPut(packageName) {
             try {
@@ -57,6 +59,7 @@ class AppLabelResolver @Inject constructor(
     /**
      * キャッシュをクリア
      */
+    @Synchronized
     fun clearCache() {
         labelCache.clear()
         iconCache.clear()
