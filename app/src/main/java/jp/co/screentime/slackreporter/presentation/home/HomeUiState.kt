@@ -18,34 +18,6 @@ data class HomeUiState(
     val sendError: String? = null
 ) {
     /**
-     * フォーマットされた合計利用時間
-     */
-    val formattedTotalTime: String
-        get() = when {
-            totalMinutes < 1 -> "1分未満"
-            totalMinutes < 60 -> "${totalMinutes}分"
-            else -> {
-                val hours = totalMinutes / 60
-                val mins = totalMinutes % 60
-                if (mins > 0) "${hours}時間${mins}分" else "${hours}時間"
-            }
-        }
-
-    /**
-     * フォーマットされたその他の利用時間
-     */
-    val formattedOtherTime: String
-        get() = when {
-            otherMinutes < 1 -> "1分未満"
-            otherMinutes < 60 -> "${otherMinutes}分"
-            else -> {
-                val hours = otherMinutes / 60
-                val mins = otherMinutes % 60
-                if (mins > 0) "${hours}時間${mins}分" else "${hours}時間"
-            }
-        }
-
-    /**
      * 利用があるかどうか
      */
     val hasUsage: Boolean

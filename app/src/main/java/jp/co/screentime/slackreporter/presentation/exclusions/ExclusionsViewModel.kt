@@ -51,7 +51,7 @@ class ExclusionsViewModel @Inject constructor(
                             durationMinutes = usage?.durationMinutes ?: 0,
                             isExcluded = app.packageName in settings.excludedPackages
                         )
-                    }.sortedByDescending { it.durationMinutes } // 利用時間でソート
+                    }.sortedWith(compareByDescending<UiAppUsage> { it.durationMinutes }.thenBy { it.appName })
 
                     Pair(apps, showExcludedOnly)
                 }.collect { (apps, showExcludedOnly) ->

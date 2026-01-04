@@ -1,5 +1,6 @@
 package jp.co.screentime.slackreporter.ui.screens.home
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -39,12 +40,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -52,6 +53,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.co.screentime.slackreporter.R
 import jp.co.screentime.slackreporter.domain.model.SendStatus
+import jp.co.screentime.slackreporter.presentation.home.HomeUiState
 import jp.co.screentime.slackreporter.presentation.home.HomeViewModel
 import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
 
@@ -65,7 +67,6 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Observe lifecycle events to reload data on resume
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -111,24 +112,39 @@ fun HomeScreen(
         ) {
             when {
                 uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
+
                 !uiState.hasUsageAccess -> {
                     UsageAccessRequiredContent(
-                        onOpenSettings = {
-                            onOpenUsageAccessSettings()
-                        },
+                        onOpenSettings = onOpenUsageAccessSettings,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
+
                 else -> {
                     HomeContent(
                         uiState = uiState,
                         onSendNow = viewModel::onClickSendNow
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun formatMinutes(context: Context, minutes: Int): String {
+    return when {
+        minutes < 1 -> context.getString(R.string.time_format_less_than_minute)
+        minutes < 60 -> context.getString(R.string.time_format_minutes, minutes)
+        else -> {
+            val hours = minutes / 60
+            val mins = minutes % 60
+            if (mins > 0) {
+                context.getString(R.string.time_format_hours_minutes, hours, mins)
+            } else {
+                context.getString(R.string.time_format_hours_minutes, hours, 0) // e.g., "1時間0分"
             }
         }
     }
@@ -172,24 +188,24 @@ private fun UsageAccessRequiredContent(
 
 @Composable
 private fun HomeContent(
-    uiState: jp.co.screentime.slackreporter.presentation.home.HomeUiState,
+    uiState: HomeUiState,
     onSendNow: () -> Unit
 ) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // 合計利用時間
         item {
             TotalTimeCard(
-                totalTime = uiState.formattedTotalTime,
+                totalTime = formatMinutes(context, uiState.totalMinutes),
                 hasUsage = uiState.hasUsage
             )
         }
 
-        // 送信ステータス
         item {
             SendStatusCard(
                 status = uiState.sendStatus,
@@ -200,7 +216,6 @@ private fun HomeContent(
             )
         }
 
-        // アプリ別利用時間
         if (uiState.topApps.isNotEmpty()) {
             item {
                 Text(
@@ -214,15 +229,13 @@ private fun HomeContent(
                 AppUsageItem(app = app)
             }
 
-            // その他
             if (uiState.otherMinutes > 0) {
                 item {
-                    OtherAppsItem(duration = uiState.formattedOtherTime)
+                    OtherAppsItem(duration = formatMinutes(context, uiState.otherMinutes))
                 }
             }
         }
 
-        // 利用がない場合
         if (!uiState.hasUsage) {
             item {
                 Text(
@@ -277,9 +290,7 @@ private fun SendStatusCard(
     error: String?,
     onSendNow: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -320,10 +331,7 @@ private fun SendStatusCard(
                     }
                 }
 
-                Button(
-                    onClick = onSendNow,
-                    enabled = !isSending
-                ) {
+                Button(onClick = onSendNow, enabled = !isSending) {
                     if (isSending) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
@@ -348,19 +356,15 @@ private fun SendStatusCard(
 
 @Composable
 private fun AppUsageItem(app: UiAppUsage) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    val context = LocalContext.current
+    Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppIcon(
-                icon = app.icon,
-                modifier = Modifier.size(40.dp)
-            )
+            AppIcon(icon = app.icon, modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -369,7 +373,7 @@ private fun AppUsageItem(app: UiAppUsage) {
                 )
             }
             Text(
-                text = app.formattedDuration,
+                text = app.formattedDuration(context),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.primary
@@ -416,10 +420,7 @@ private fun OtherAppsItem(duration: String) {
 }
 
 @Composable
-private fun AppIcon(
-    icon: Drawable?,
-    modifier: Modifier = Modifier
-) {
+private fun AppIcon(icon: Drawable?, modifier: Modifier = Modifier) {
     if (icon != null) {
         Image(
             bitmap = icon.toBitmap(width = 80, height = 80).asImageBitmap(),

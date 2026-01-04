@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,46 +78,17 @@ fun ExclusionsScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            when {
-                uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                uiState.hasNoUsageToday -> {
-                    EmptyState(
-                        message = stringResource(R.string.exclusions_no_usage_today),
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    ExclusionsContent(
-                        uiState = uiState,
-                        onShowExcludedOnlyChanged = viewModel::onShowExcludedOnlyChanged,
-                        onExcludedChanged = viewModel::onExcludedChanged,
-                        onShowAllApps = viewModel::onShowAllApps
-                    )
-                }
+            if (uiState.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                ExclusionsContent(
+                    uiState = uiState,
+                    onShowExcludedOnlyChanged = viewModel::onShowExcludedOnlyChanged,
+                    onExcludedChanged = viewModel::onExcludedChanged,
+                    onShowAllApps = viewModel::onShowAllApps
+                )
             }
         }
-    }
-}
-
-@Composable
-private fun EmptyState(
-    message: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -206,6 +178,7 @@ private fun AppExclusionItem(
     app: UiAppUsage,
     onExcludedChanged: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -226,9 +199,9 @@ private fun AppExclusionItem(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = app.formattedDuration,
+                    text = app.formattedDuration(context),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (app.durationMinutes > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
