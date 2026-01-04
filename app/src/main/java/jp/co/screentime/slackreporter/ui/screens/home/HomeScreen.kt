@@ -1,6 +1,5 @@
 package jp.co.screentime.slackreporter.ui.screens.home
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +52,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.co.screentime.slackreporter.R
+import jp.co.screentime.slackreporter.platform.DurationFormatter
 import jp.co.screentime.slackreporter.domain.model.SendStatus
 import jp.co.screentime.slackreporter.presentation.home.HomeUiState
 import jp.co.screentime.slackreporter.presentation.home.HomeViewModel
@@ -135,37 +135,6 @@ fun HomeScreen(
 }
 
 @Composable
-private fun formatMinutes(context: Context, minutes: Int): String {
-    if (minutes < 1) {
-        return context.getString(R.string.time_format_less_than_minute)
-    }
-
-    val hours = minutes / 60
-    val mins = minutes % 60
-
-    val hoursString = if (hours > 0) {
-        context.resources.getQuantityString(R.plurals.hours, hours, hours)
-    } else {
-        null
-    }
-
-    val minutesString = if (mins > 0) {
-        context.resources.getQuantityString(R.plurals.minutes, mins, mins)
-    } else {
-        null
-    }
-
-    return when {
-        hoursString != null && minutesString != null -> {
-            context.getString(R.string.time_format_hours_and_minutes, hoursString, minutesString)
-        }
-        hoursString != null -> hoursString
-        minutesString != null -> minutesString
-        else -> context.resources.getQuantityString(R.plurals.minutes, 0, 0)
-    }
-}
-
-@Composable
 private fun UsageAccessRequiredContent(
     onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
@@ -216,7 +185,7 @@ private fun HomeContent(
     ) {
         item {
             TotalTimeCard(
-                totalTime = formatMinutes(context, uiState.totalMinutes),
+                totalTime = DurationFormatter.formatMinutes(context, uiState.totalMinutes),
                 hasUsage = uiState.hasUsage
             )
         }
@@ -246,7 +215,7 @@ private fun HomeContent(
 
             if (uiState.otherMinutes > 0) {
                 item {
-                    OtherAppsItem(duration = formatMinutes(context, uiState.otherMinutes))
+                    OtherAppsItem(duration = DurationFormatter.formatMinutes(context, uiState.otherMinutes))
                 }
             }
         }

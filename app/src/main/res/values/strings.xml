@@ -54,12 +54,6 @@
     <string name="exclusions_load_failed">アプリ一覧の読み込みに失敗しました</string>
     <string name="exclusions_switch_label">除外する</string>
 
-    <!-- Navigation -->
-    <string name="nav_home">ホーム</string>
-    <string name="nav_settings">設定</string>
-    <string name="nav_exclusions">除外設定</string>
-    <string name="nav_back">戻る</string>
-
     <!-- Time Format -->
     <string name="time_format_less_than_minute">1分未満</string>
     <string name="time_format_hours_and_minutes">%1$s %2$s</string>
@@ -70,9 +64,16 @@
         <item quantity="other">%d分</item>
     </plurals>
 
+    <!-- Navigation -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_settings">設定</string>
+    <string name="nav_exclusions">除外設定</string>
+    <string name="nav_back">戻る</string>
+
     <!-- Slack Message -->
     <string name="slack_message_header">📱 *%1$s の利用状況*\n合計: *%2$s* (目標30分との差: %3$s)</string>
     <string name="slack_message_app_line">• %1$s - %2$s</string>
     <string name="slack_message_other">• その他 - %1$s</string>
+    <string name="slack_message_no_usage">本日は利用が検出されませんでした。</string>
     <string name="slack_test_message">📱 ScreenTime Slack Reporter からのテスト送信です。</string>
 </resources>

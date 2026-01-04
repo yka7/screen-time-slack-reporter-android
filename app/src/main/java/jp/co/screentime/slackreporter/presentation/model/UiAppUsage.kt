@@ -3,6 +3,7 @@ package jp.co.screentime.slackreporter.presentation.model
 import android.content.Context
 import android.graphics.drawable.Drawable
 import jp.co.screentime.slackreporter.R
+import jp.co.screentime.slackreporter.platform.DurationFormatter
 
 /**
  * UI表示用のアプリ利用情報
@@ -26,18 +27,7 @@ data class UiAppUsage(
     fun formattedDuration(context: Context): String {
         return when {
             durationMinutes == 0 -> context.getString(R.string.exclusions_no_usage_today_for_app)
-            durationMinutes < 1 -> context.getString(R.string.time_format_less_than_minute)
-            durationMinutes < 60 -> context.getString(R.string.time_format_minutes, durationMinutes)
-            else -> {
-                val hours = durationMinutes / 60
-                val mins = durationMinutes % 60
-                if (mins > 0) {
-                    context.getString(R.string.time_format_hours_minutes, hours, mins)
-                } else {
-                    // 1時間ちょうどなどの場合
-                    context.getString(R.string.time_format_hours_minutes, hours, 0)
-                }
-            }
+            else -> DurationFormatter.formatMinutes(context, durationMinutes)
         }
     }
 }
