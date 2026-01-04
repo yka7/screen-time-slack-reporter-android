@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.first
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -86,7 +87,7 @@ class SendDailyReportUseCase @Inject constructor(
         val dateFormat = SimpleDateFormat("yyyy/MM/dd (E)", Locale.JAPAN)
         val dateString = dateFormat.format(Date())
 
-        val totalMinutes = usageList.sumOf { it.durationMinutes }
+        val totalMinutes = millisToMinutes(usageList.sumOf { it.durationMillis })
         val diffMinutes = totalMinutes - TARGET_MINUTES
         val diffString = if (diffMinutes >= 0) "+${diffMinutes}分" else "${diffMinutes}分"
 
@@ -116,7 +117,7 @@ class SendDailyReportUseCase @Inject constructor(
 
         // その他
         if (otherApps.isNotEmpty()) {
-            val otherMinutes = otherApps.sumOf { it.durationMinutes }
+            val otherMinutes = millisToMinutes(otherApps.sumOf { it.durationMillis })
             val otherDurationString = formatDuration(otherMinutes)
             sb.appendLine("• その他 - $otherDurationString")
         }
@@ -137,5 +138,9 @@ class SendDailyReportUseCase @Inject constructor(
                 if (mins > 0) "${hours}時間${mins}分" else "${hours}時間"
             }
         }
+    }
+
+    private fun millisToMinutes(durationMillis: Long): Int {
+        return TimeUnit.MILLISECONDS.toMinutes(durationMillis).toInt()
     }
 }

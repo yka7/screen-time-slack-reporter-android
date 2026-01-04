@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,19 +85,19 @@ class HomeViewModel @Inject constructor(
                         )
                     }
 
-                    val otherMinutes = filteredUsage
+                    val otherDurationMillis = filteredUsage
                         .drop(TOP_APPS_COUNT)
-                        .sumOf { it.durationMinutes }
+                        .sumOf { it.durationMillis }
 
-                    val totalMinutes = filteredUsage.sumOf { it.durationMinutes }
+                    val totalDurationMillis = filteredUsage.sumOf { it.durationMillis }
 
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             hasUsageAccess = true,
-                            totalMinutes = totalMinutes,
+                            totalMinutes = millisToMinutes(totalDurationMillis),
                             topApps = topApps,
-                            otherMinutes = otherMinutes
+                            otherMinutes = millisToMinutes(otherDurationMillis)
                         )
                     }
                 }
@@ -157,5 +158,9 @@ class HomeViewModel @Inject constructor(
      */
     fun onUsageAccessGranted() {
         loadData()
+    }
+
+    private fun millisToMinutes(durationMillis: Long): Int {
+        return TimeUnit.MILLISECONDS.toMinutes(durationMillis).toInt()
     }
 }
