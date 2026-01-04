@@ -49,6 +49,7 @@
     <string name="exclusions_no_excluded">除外設定されたアプリはありません</string>
     <string name="exclusions_show_all">すべてのアプリを表示</string>
     <string name="exclusions_no_usage_today">今日利用したアプリはありません</string>
+    <string name="exclusions_no_usage_today_for_app">今日の利用なし</string>
     <string name="exclusions_switch_label">除外する</string>
 
     <!-- Navigation -->

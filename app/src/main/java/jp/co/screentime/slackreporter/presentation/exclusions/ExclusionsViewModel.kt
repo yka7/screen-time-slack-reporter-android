@@ -4,23 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.screentime.slackreporter.data.repository.SettingsRepository
+import jp.co.screentime.slackreporter.domain.usecase.GetAllAppsUseCase
 import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsedAppsUseCase
-import jp.co.screentime.slackreporter.platform.AppLabelResolver
 import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ExclusionsViewModel @Inject constructor(
+    private val getAllAppsUseCase: GetAllAppsUseCase,
     private val getTodayUsedAppsUseCase: GetTodayUsedAppsUseCase,
-    private val settingsRepository: SettingsRepository,
-    private val appLabelResolver: AppLabelResolver
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExclusionsUiState())
@@ -28,33 +27,32 @@ class ExclusionsViewModel @Inject constructor(
 
     init {
         loadData()
-        observeShowExcludedOnly()
     }
 
-    /**
-     * データを読み込む
-     */
     private fun loadData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             try {
+                val allApps = getAllAppsUseCase()
                 val usageList = getTodayUsedAppsUseCase()
+                val usageMap = usageList.associateBy { it.packageName }
 
-                // 除外設定とshowExcludedOnlyを監視
                 combine(
                     settingsRepository.settingsFlow,
                     settingsRepository.showExcludedOnlyFlow
                 ) { settings, showExcludedOnly ->
-                    val apps = usageList.map { usage ->
+                    val apps = allApps.map { app ->
+                        val usage = usageMap[app.packageName]
                         UiAppUsage(
-                            packageName = usage.packageName,
-                            appName = appLabelResolver.getAppLabel(usage.packageName),
-                            icon = appLabelResolver.getAppIcon(usage.packageName),
-                            durationMinutes = usage.durationMinutes,
-                            isExcluded = usage.packageName in settings.excludedPackages
+                            packageName = app.packageName,
+                            appName = app.appName,
+                            icon = app.icon,
+                            durationMinutes = usage?.durationMinutes ?: 0,
+                            isExcluded = app.packageName in settings.excludedPackages
                         )
-                    }
+                    }.sortedByDescending { it.durationMinutes } // 利用時間でソート
+
                     Pair(apps, showExcludedOnly)
                 }.collect { (apps, showExcludedOnly) ->
                     _uiState.update {
@@ -71,34 +69,16 @@ class ExclusionsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * showExcludedOnlyの変更を監視
-     */
-    private fun observeShowExcludedOnly() {
-        viewModelScope.launch {
-            settingsRepository.showExcludedOnlyFlow.collect { showExcludedOnly ->
-                _uiState.update { it.copy(showExcludedOnly = showExcludedOnly) }
-            }
-        }
-    }
-
-    /**
-     * 「対象外のみ表示」を切り替え
-     */
     fun onShowExcludedOnlyChanged(showExcludedOnly: Boolean) {
         viewModelScope.launch {
             settingsRepository.setShowExcludedOnly(showExcludedOnly)
         }
     }
 
-    /**
-     * アプリの除外状態を切り替え
-     */
     fun onExcludedChanged(packageName: String, excluded: Boolean) {
         viewModelScope.launch {
             settingsRepository.setExcluded(packageName, excluded)
 
-            // UI状態も更新
             _uiState.update { state ->
                 state.copy(
                     apps = state.apps.map { app ->
@@ -113,9 +93,6 @@ class ExclusionsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 一覧を表示（フィルタをOFF）
-     */
     fun onShowAllApps() {
         onShowExcludedOnlyChanged(false)
     }
