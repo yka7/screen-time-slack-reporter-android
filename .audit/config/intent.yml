@@ -1,0 +1,129 @@
+version: "2.0"
+updated_at: "2025-01-31T12:00:00Z"
+updated_by: "audit-run-001"
+
+# === Mission ===
+mission:
+  target_user: "保護者（子どもの端末利用を管理したい人）"
+  provided_value: "子どもの1日のスマホ利用時間を自動でSlackに通知し、利用状況を可視化する"
+  desired_state: "毎日指定時刻に、子どもの端末利用状況がSlackチャンネルに自動投稿され、保護者が確認できる"
+
+# === Assumptions（仮定した前提を記録）===
+assumptions:
+  - id: "ASM-001"
+    field: "mission.target_user"
+    value: "保護者（子どもの端末利用を管理したい人）"
+    reason: "README.mdに『子ども端末の1日の利用時間』と記載があるため"
+    confidence: "high"
+  
+  - id: "ASM-002"
+    field: "quality_attributes.test_coverage"
+    value: "0%（テストコード不在）"
+    reason: "app/src/test, app/src/androidTest ディレクトリが存在しない"
+    confidence: "high"
+  
+  - id: "ASM-003"
+    field: "deployment.target_os"
+    value: "Android 6.0 (API 23) 以上"
+    reason: "app/build.gradle.kts の minSdk = 23"
+    confidence: "high"
+  
+  - id: "ASM-004"
+    field: "quality_attributes.target_coverage"
+    value: ">= 70%"
+    reason: "業界標準のAndroidアプリ品質基準から推測"
+    confidence: "medium"
+  
+  - id: "ASM-005"
+    field: "security.webhook_handling"
+    value: "Webhook URLはユーザー入力、端末内のDataStoreに保存"
+    reason: "PreferencesDataStore.kt, SlackWebhookValidator.kt の実装から確認"
+    confidence: "high"
+
+# === Core Functions（リポジトリの存在意義）===
+core_functions:
+  - id: "CF-001"
+    claim: "当日のアプリ別利用時間を取得できる"
+    source: "README.md:7, UsageStatsDataSource.kt"
+    testable: true
+    verification_type: "unit_test"
+
+  - id: "CF-002"
+    claim: "取得した利用情報をSlack Webhookへ送信できる"
+    source: "README.md:8, SlackWebhookClient.kt"
+    testable: true
+    verification_type: "integration_test"
+    requires: "有効なWebhook URL"
+
+  - id: "CF-003"
+    claim: "指定時刻に自動でレポートを送信できる"
+    source: "README.md:8, DailySlackReportWorker.kt"
+    testable: true
+    verification_type: "instrumented_test"
+    requires: "WorkManager環境"
+
+  - id: "CF-004"
+    claim: "特定のアプリを除外設定できる"
+    source: "README.md:9, SettingsRepository.kt"
+    testable: true
+    verification_type: "unit_test"
+
+  - id: "CF-005"
+    claim: "手動でも送信できる"
+    source: "README.md:10"
+    testable: true
+    verification_type: "ui_test"
+
+# === Quality Attributes（検証方法とセット）===
+quality_attributes:
+  - id: "QA-001"
+    name: "テストカバレッジ"
+    target: ">= 70%"
+    current: "0%"
+    verification:
+      type: "measurement"
+      command: "./gradlew jacocoTestReport"
+      criteria:
+        operator: ">="
+        value: 70
+        unit: "%"
+      interpretation:
+        success_means: "コードの70%以上がテストで実行された"
+        failure_means: "テストされていないコードパスが30%以上ある"
+
+  - id: "QA-002"
+    name: "ビルド成功"
+    target: "エラーなし"
+    verification:
+      type: "command"
+      command: "./gradlew assembleDebug"
+      criteria:
+        operator: "=="
+        value: 0
+        unit: "exit_code"
+
+  - id: "QA-003"
+    name: "Lintエラー"
+    target: "0件"
+    verification:
+      type: "command"
+      command: "./gradlew lint"
+      criteria:
+        operator: "=="
+        value: 0
+        unit: "errors"
+
+  - id: "QA-004"
+    name: "セキュリティ（Webhook URL保護）"
+    target: "ハードコードなし、暗号化保存"
+    verification:
+      type: "code_review"
+      check_items:
+        - "Webhook URLがソースコードにハードコードされていない"
+        - "DataStoreで保存されている"
+
+non_goals:
+  - "iOS版の開発"
+  - "Slack以外の通知先対応"
+  - "複数端末の統合レポート"
+  - "リアルタイム監視機能"

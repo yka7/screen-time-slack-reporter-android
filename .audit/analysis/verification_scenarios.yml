@@ -1,0 +1,210 @@
+version: "1.0"
+updated_at: "2025-01-31T12:00:00Z"
+run_id: "audit-run-001"
+
+# === コア機能検証シナリオ ===
+scenarios:
+  # --- CF-001: アプリ利用時間取得 ---
+  - function_id: "CF-001"
+    name: "当日のアプリ別利用時間取得"
+    
+    description: |
+      UsageStatsManagerから当日0:00起点のアプリ別利用時間を取得し、
+      利用時間が0より大きいアプリのリストを返す
+    
+    preconditions:
+      - "PACKAGE_USAGE_STATS権限が付与されている"
+      - "少なくとも1つのアプリが当日使用されている"
+    
+    input:
+      type: "time_range"
+      start: "当日0:00のエポックミリ秒"
+      end: "現在時刻のエポックミリ秒"
+    
+    expected_output:
+      type: "list<AppUsage>"
+      validation_rules:
+        - "リストが空でない（権限あり＆使用アプリありの場合）"
+        - "各要素にpackageNameとdurationMillisが含まれる"
+        - "durationMillis > 0"
+        - "packageNameが有効なパッケージ名形式"
+    
+    edge_cases:
+      - name: "権限なし"
+        condition: "PACKAGE_USAGE_STATS権限が未付与"
+        expected: "空リスト"
+      
+      - name: "当日未使用"
+        condition: "当日アプリ使用なし（深夜直後など）"
+        expected: "空リスト"
+    
+    verification_type: "unit_test"
+    test_class: "UsageStatsDataSourceTest"
+
+  # --- CF-002: Slack Webhook送信 ---
+  - function_id: "CF-002"
+    name: "Slack Webhookへのメッセージ送信"
+    
+    description: |
+      有効なWebhook URLに対してJSONメッセージをPOSTし、
+      Slack APIからの応答を処理する
+    
+    preconditions:
+      - "有効なWebhook URLが設定されている"
+      - "ネットワーク接続あり"
+    
+    input:
+      type: "object"
+      fields:
+        webhookUrl: "https://hooks.slack.com/services/xxx/yyy/zzz"
+        text: "テストメッセージ"
+    
+    expected_output:
+      type: "Result<Unit>"
+      validation_rules:
+        - "成功時: Result.success(Unit)"
+        - "失敗時: Result.failure(Exception)にエラー情報含む"
+    
+    edge_cases:
+      - name: "無効なURL形式"
+        input: "not-a-url"
+        expected: "Result.failure with validation error"
+      
+      - name: "非Slack URL"
+        input: "https://example.com/webhook"
+        expected: "Result.failure with validation error"
+      
+      - name: "期限切れWebhook"
+        input: "https://hooks.slack.com/services/expired/xxx/yyy"
+        expected: "Result.failure with 404 error"
+      
+      - name: "ネットワークエラー"
+        condition: "オフライン状態"
+        expected: "Result.failure with network error"
+      
+      - name: "タイムアウト"
+        condition: "30秒超過"
+        expected: "Result.failure with timeout error"
+    
+    verification_type: "integration_test"
+    test_class: "SlackWebhookClientTest"
+    requires_mock: true
+    mock_server: "MockWebServer"
+
+  # --- CF-003: 定時自動送信 ---
+  - function_id: "CF-003"
+    name: "WorkManagerによる定時実行"
+    
+    description: |
+      指定時刻（デフォルト21:00）にDailySlackReportWorkerが実行され、
+      レポートがSlackに送信される
+    
+    preconditions:
+      - "sendEnabled = true"
+      - "Webhook URL設定済み"
+      - "PACKAGE_USAGE_STATS権限あり"
+    
+    input:
+      type: "scheduled_trigger"
+      time: "21:00"
+    
+    expected_output:
+      type: "Worker.Result"
+      validation_rules:
+        - "全条件満たす場合: Result.success()"
+        - "リトライ対象エラー: Result.retry()"
+        - "致命的エラー: Result.failure()"
+    
+    edge_cases:
+      - name: "送信無効"
+        condition: "sendEnabled = false"
+        expected: "Result.success()（スキップ）"
+      
+      - name: "Webhook未設定"
+        condition: "webhookUrl = empty"
+        expected: "Result.success()（スキップ）"
+      
+      - name: "Usage権限なし"
+        condition: "PACKAGE_USAGE_STATS未付与"
+        expected: "Result.failure()"
+      
+      - name: "ネットワークエラー＆リトライ"
+        condition: "一時的なネットワーク障害"
+        expected: "Result.retry()（3回まで）"
+    
+    verification_type: "instrumented_test"
+    test_class: "DailySlackReportWorkerTest"
+    requires: "WorkManagerTestInitHelper"
+
+  # --- CF-004: 除外アプリ設定 ---
+  - function_id: "CF-004"
+    name: "除外アプリのフィルタリング"
+    
+    description: |
+      設定で指定されたパッケージ名をレポートから除外する
+    
+    preconditions:
+      - "excludedPackages設定あり"
+    
+    input:
+      type: "object"
+      fields:
+        allUsage:
+          - packageName: "com.youtube.app"
+            durationMillis: 1800000
+          - packageName: "com.chrome.browser"
+            durationMillis: 900000
+          - packageName: "com.game.excluded"
+            durationMillis: 600000
+        excludedPackages:
+          - "com.game.excluded"
+    
+    expected_output:
+      type: "list<AppUsage>"
+      content:
+        - packageName: "com.youtube.app"
+          durationMillis: 1800000
+        - packageName: "com.chrome.browser"
+          durationMillis: 900000
+      validation_rules:
+        - "excludedPackagesに含まれるアプリが除外されている"
+        - "除外されていないアプリはそのまま含まれる"
+    
+    edge_cases:
+      - name: "除外リスト空"
+        input:
+          excludedPackages: []
+        expected: "全アプリがそのまま含まれる"
+      
+      - name: "全アプリ除外"
+        input:
+          excludedPackages: ["*"]  # ワイルドカード未対応の場合は個別指定
+        expected: "空リスト"
+    
+    verification_type: "unit_test"
+    test_class: "SendDailyReportUseCaseTest"
+
+  # --- CF-005: 手動送信 ---
+  - function_id: "CF-005"
+    name: "手動での即時送信"
+    
+    description: |
+      ユーザーが「今すぐ送信」ボタンを押すと即座にレポートが送信される
+    
+    preconditions:
+      - "Webhook URL設定済み"
+      - "PACKAGE_USAGE_STATS権限あり"
+    
+    input:
+      type: "user_action"
+      action: "手動送信ボタンタップ"
+    
+    expected_output:
+      type: "SendResult"
+      validation_rules:
+        - "成功時: status = SUCCESS, lastSentEpochMillis更新"
+        - "失敗時: status = FAILED, errorMessage含む"
+    
+    verification_type: "ui_test"
+    test_class: "HomeScreenTest"
+    requires: "Compose UI Test"

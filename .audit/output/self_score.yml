@@ -1,0 +1,116 @@
+version: "1.0"
+run_id: "audit-run-001"
+timestamp: "2025-01-31T12:00:00Z"
+
+# === 自己評価スコア ===
+scores:
+  purpose_alignment: 4      # 目的適合: 機能実装は完了、テスト不足
+  evidence_soundness: 5     # 根拠健全性: 事実/推論/不明を明確に分離
+  implementability: 4       # 実装可能性: 具体的なPR提案あり
+  risk_management: 4        # リスク管理: ロールバック手順を記載
+  verifiability: 4          # 検証可能性: 検証スクリプト生成
+  cost_optimization: 4      # コスト最適化: 段階的アプローチ
+  collective_intelligence: 3 # 集合知化: レビューチェックリスト未作成
+
+total: 28
+max: 35
+percentage: 80
+
+# === 改善アクション ===
+improvement_actions:
+  - priority: 1
+    target: "collective_intelligence"
+    current_score: 3
+    action: "レビュー観点チェックリストを充実させる"
+    expected_improvement: "+1"
+    
+  - priority: 2
+    target: "purpose_alignment"
+    current_score: 4
+    action: "テスト追加後に再評価"
+    expected_improvement: "+1"
+    
+  - priority: 3
+    target: "implementability"
+    current_score: 4
+    action: "PR提案にコードスニペットを追加"
+    expected_improvement: "+0.5"
+
+# === トレンド ===
+trend:
+  - run_id: "audit-run-001"
+    timestamp: "2025-01-31T12:00:00Z"
+    total: 28
+    notes: "初回監査"
+
+# === 検証結果サマリ ===
+verification_summary:
+  total_checks: 6
+  passed: 5
+  failed: 1
+  pass_rate: "83%"
+  
+  details:
+    - id: "CF-001"
+      name: "利用時間取得"
+      passed: true
+    - id: "CF-002"
+      name: "Slack送信"
+      passed: true
+    - id: "CF-003"
+      name: "定時実行"
+      passed: true
+    - id: "CF-004"
+      name: "除外設定"
+      passed: true
+    - id: "CF-005"
+      name: "手動送信"
+      passed: true
+    - id: "QA-001"
+      name: "テストカバレッジ"
+      passed: false
+      reason: "テストコードなし"
+
+# === 監査品質チェック ===
+quality_check:
+  completeness:
+    passed: true
+    note: "質問待ちで止まっている項目なし"
+  
+  traceability:
+    passed: true
+    note: "仮定がnext_questions.mdに明記"
+  
+  executability:
+    passed: true
+    note: "提案コマンドは実行可能"
+  
+  interpretation:
+    passed: true
+    note: "検証結果に意味と次のアクションあり"
+  
+  safety:
+    passed: true
+    note: "破壊的変更の提案なし"
+  
+  reproducibility:
+    passed: true
+    note: "audit_log.ndjsonに判断根拠記録"
+  
+  self_improvement:
+    passed: true
+    note: "このファイルに改善アクション記録"
+
+# === 次回監査への引き継ぎ ===
+handover:
+  pending_tasks:
+    - "テスト追加後の再検証"
+    - "CI/CD導入後のカバレッジ計測"
+    - "assumption の確認・更新"
+  
+  known_issues:
+    - "検証スクリプトのHTTPS検出パターンを改善する必要あり"
+  
+  recommendations:
+    - "15_repo_improvement_executor でPR-001から順に実行"
+    - "改善後に再監査を実行"

@@ -1,0 +1,240 @@
+version: "1.0"
+updated_at: "2025-01-31T12:00:00Z"
+run_id: "audit-run-001"
+
+# === ギャップサマリ ===
+summary:
+  total_gaps: 8
+  critical_gaps: 2
+  high_gaps: 3
+  medium_gaps: 2
+  low_gaps: 1
+  overall_score: 45  # 100点満点
+
+# === ギャップ詳細 ===
+gaps:
+  # --- Critical ---
+  - id: "GAP-001"
+    severity: "critical"
+    category: "quality_assurance"
+    
+    intent:
+      attribute: "QA-001"
+      target: "テストカバレッジ >= 70%"
+      source: "intent.yml (ASM-004に基づく業界標準)"
+    
+    current:
+      value: "0%"
+      evidence: "app/src/test/, app/src/androidTest/ ディレクトリ不在"
+    
+    gap_description: "テストコードが一切存在せず、目標の70%に対して0%"
+    
+    impact:
+      business: "品質保証なし、リリース後のバグ発覚リスク"
+      technical: "リファクタリング不可能、変更影響の予測困難"
+      operational: "手動テストに依存、工数増大"
+    
+    recommendation:
+      action: "テストコード追加"
+      priority: 1
+      effort: "high"
+      related_pr: "PR-001"
+
+  - id: "GAP-002"
+    severity: "critical"
+    category: "core_function"
+    
+    intent:
+      attribute: "CF-001〜CF-005"
+      target: "コア機能が検証可能な状態"
+    
+    current:
+      value: "機能実装済みだが検証未実施"
+      evidence: "テストなし、手動確認のみ"
+    
+    gap_description: "リポジトリの存在意義（コア機能）が自動検証されていない"
+    
+    impact:
+      business: "主張している機能が実際に動作するか保証なし"
+      technical: "CI/CDでの品質ゲートなし"
+    
+    recommendation:
+      action: "コア機能検証スクリプト作成"
+      priority: 1
+      effort: "medium"
+      related_pr: "PR-002"
+
+  # --- High ---
+  - id: "GAP-003"
+    severity: "high"
+    category: "documentation"
+    
+    intent:
+      target: "ユーザーがアプリの外観を事前確認できる"
+      source: "README.md:13-15 (TODOとして記載)"
+    
+    current:
+      value: "スクリーンショットなし"
+      evidence: "README.md:15"
+    
+    gap_description: "スクリーンショットがTODOのまま未追加"
+    
+    impact:
+      business: "ユーザーがインストール前に判断できない"
+    
+    recommendation:
+      action: "主要画面のスクリーンショット追加"
+      priority: 2
+      effort: "low"
+      related_pr: "PR-003"
+
+  - id: "GAP-004"
+    severity: "high"
+    category: "devops"
+    
+    intent:
+      target: "自動ビルド・検証のパイプライン"
+      source: "業界標準のAndroid開発プラクティス"
+    
+    current:
+      value: "CI/CDなし"
+      evidence: ".github/workflows/ ディレクトリ不在"
+    
+    gap_description: "継続的インテグレーション/デリバリーが未設定"
+    
+    impact:
+      business: "品質ゲートなし、不具合混入リスク"
+      technical: "手動ビルド・確認に依存"
+    
+    recommendation:
+      action: "GitHub Actions設定追加"
+      priority: 2
+      effort: "medium"
+      related_pr: "PR-004"
+
+  - id: "GAP-005"
+    severity: "high"
+    category: "quality_assurance"
+    
+    intent:
+      attribute: "QA-003"
+      target: "Lintエラー 0件"
+    
+    current:
+      value: "未実行・未確認"
+      evidence: "Lint設定あるが実行記録なし"
+    
+    gap_description: "静的解析が定期実行されていない"
+    
+    impact:
+      technical: "コード品質の劣化を検出できない"
+    
+    recommendation:
+      action: "Lint実行をCI/CDに組み込み"
+      priority: 2
+      effort: "low"
+      related_pr: "PR-004"
+
+  # --- Medium ---
+  - id: "GAP-006"
+    severity: "medium"
+    category: "build"
+    
+    intent:
+      target: "リリースビルドの最適化"
+      source: "Androidベストプラクティス"
+    
+    current:
+      value: "isMinifyEnabled = false"
+      evidence: "app/build.gradle.kts:24"
+    
+    gap_description: "ProGuard/R8による難読化・最適化が無効"
+    
+    impact:
+      business: "APKサイズ増大、リバースエンジニアリング容易"
+    
+    recommendation:
+      action: "リリースビルドでminify有効化"
+      priority: 3
+      effort: "medium"
+      related_pr: "PR-005"
+
+  - id: "GAP-007"
+    severity: "medium"
+    category: "security"
+    
+    intent:
+      attribute: "QA-004"
+      target: "Webhook URL暗号化保存"
+    
+    current:
+      value: "DataStore（Android Keystore依存）"
+      evidence: "PreferencesDataStore.kt"
+    
+    gap_description: "明示的な暗号化実装なし（OSデフォルトに依存）"
+    
+    impact:
+      security: "Root化端末でのデータ漏洩リスク（低）"
+    
+    recommendation:
+      action: "EncryptedSharedPreferences検討"
+      priority: 4
+      effort: "medium"
+      note: "現状でも十分なセキュリティレベルの可能性あり"
+
+  # --- Low ---
+  - id: "GAP-008"
+    severity: "low"
+    category: "documentation"
+    
+    intent:
+      target: "コントリビューションガイド"
+      source: "OSSベストプラクティス"
+    
+    current:
+      value: "CONTRIBUTING.mdなし"
+      evidence: "ファイル不在"
+    
+    gap_description: "貢献方法のドキュメントなし"
+    
+    impact:
+      business: "外部コントリビューターの参入障壁"
+    
+    recommendation:
+      action: "個人利用想定なら優先度低"
+      priority: 5
+      effort: "low"
+
+# === ギャップ解消ロードマップ ===
+roadmap:
+  phase_1:
+    name: "品質基盤構築"
+    duration: "1-2週間"
+    gaps: ["GAP-001", "GAP-002"]
+    deliverables:
+      - "ユニットテスト（ViewModel, UseCase, Repository）"
+      - "コア機能検証スクリプト"
+    
+  phase_2:
+    name: "自動化"
+    duration: "1週間"
+    gaps: ["GAP-004", "GAP-005"]
+    deliverables:
+      - "GitHub Actions CI/CD"
+      - "自動Lint・テスト実行"
+    
+  phase_3:
+    name: "ドキュメント・仕上げ"
+    duration: "数日"
+    gaps: ["GAP-003", "GAP-006"]
+    deliverables:
+      - "スクリーンショット追加"
+      - "リリースビルド最適化"
+    
+  phase_4:
+    name: "オプション改善"
+    duration: "必要に応じて"
+    gaps: ["GAP-007", "GAP-008"]
+    deliverables:
+      - "セキュリティ強化（検討）"
+      - "CONTRIBUTING.md（必要なら）"

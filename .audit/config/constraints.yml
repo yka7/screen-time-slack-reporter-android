@@ -1,0 +1,91 @@
+version: "1.0"
+updated_at: "2025-01-31T12:00:00Z"
+
+# === 技術的制約 ===
+technical:
+  language: "Kotlin"
+  min_sdk: 23
+  target_sdk: 35
+  compile_sdk: 35
+  
+  frameworks:
+    - name: "Jetpack Compose"
+      version: "BOM 2024.08.00"
+    - name: "Hilt"
+      version: "2.51.1"
+    - name: "WorkManager"
+      version: "2.9.0"
+    - name: "DataStore"
+      version: "1.1.1"
+    - name: "OkHttp"
+      version: "4.12.0"
+  
+  architecture:
+    pattern: "MVVM + Repository"
+    layers:
+      - "presentation (ViewModel)"
+      - "domain (UseCase)"
+      - "data (Repository, DataSource)"
+    di: "Hilt"
+
+# === セキュリティ制約 ===
+security:
+  sensitive_data:
+    - type: "webhook_url"
+      storage: "DataStore (encrypted at rest by Android)"
+      exposure_risk: "medium"
+      mitigation: "ユーザー入力のみ、ハードコード禁止"
+    
+    - type: "usage_stats"
+      storage: "メモリのみ（永続化なし）"
+      exposure_risk: "low"
+      mitigation: "Slack送信時のみ一時保持"
+  
+  permissions:
+    - name: "PACKAGE_USAGE_STATS"
+      risk: "high"
+      justification: "アプリ利用統計取得のため必須"
+      user_consent: "システム設定画面で明示的許可が必要"
+    
+    - name: "INTERNET"
+      risk: "low"
+      justification: "Slack Webhook送信のため"
+    
+    - name: "RECEIVE_BOOT_COMPLETED"
+      risk: "low"
+      justification: "端末再起動後のWorkManager再スケジュール"
+
+# === 運用制約 ===
+operational:
+  deployment:
+    method: "APK直接インストール or Android Studio"
+    store_publication: false
+    reason: "個人/家庭内利用を想定"
+  
+  monitoring:
+    crash_reporting: false
+    analytics: false
+    reason: "プライバシー配慮、データ収集最小化"
+  
+  update:
+    method: "手動"
+    auto_update: false
+
+# === 品質制約 ===
+quality:
+  code_style:
+    - "Kotlin公式スタイルガイド準拠"
+    - "Android公式アーキテクチャガイドライン準拠"
+  
+  documentation:
+    readme: true
+    code_comments: "KDoc形式"
+    api_docs: false
+  
+  testing:
+    required:
+      - "ユニットテスト（ViewModel, UseCase, Repository）"
+      - "UIテスト（主要画面）"
+    optional:
+      - "エンドツーエンドテスト"
+      - "パフォーマンステスト"

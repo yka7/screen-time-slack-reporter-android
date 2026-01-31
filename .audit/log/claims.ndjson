@@ -1,0 +1,14 @@
+{"id":"C-001","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"プロジェクトはKotlin + Jetpack Composeで構築されたAndroidアプリ","confidence":1.0,"source":"build.gradle.kts:1-7, app/build.gradle.kts:1-42"}
+{"id":"C-002","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"MVVM + Repositoryパターンのアーキテクチャ","confidence":1.0,"source":"README.md:68-69, app/src/main/java/jp/co/screentime/slackreporter/"}
+{"id":"C-003","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"Hilt DIフレームワークを使用","confidence":1.0,"source":"app/build.gradle.kts:5-6, di/AppModule.kt"}
+{"id":"C-004","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"WorkManagerで定時実行を実装","confidence":1.0,"source":"workers/DailySlackReportWorker.kt, README.md:73"}
+{"id":"C-005","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"UsageStatsManagerでアプリ利用時間を取得","confidence":1.0,"source":"data/usage/UsageStatsDataSource.kt:30-48"}
+{"id":"C-006","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"OkHttpでSlack Webhook APIを呼び出し","confidence":1.0,"source":"data/slack/SlackWebhookClient.kt:35-65"}
+{"id":"C-007","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"テストコードが存在しない","confidence":1.0,"source":"app/src/test/, app/src/androidTest/ ディレクトリ不在"}
+{"id":"C-008","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"ソースコード22ファイル","confidence":1.0,"source":"find *.kt 結果"}
+{"id":"C-009","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"Webhook URL検証機能あり","confidence":1.0,"source":"data/slack/SlackWebhookValidator.kt"}
+{"id":"C-010","type":"fact","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"除外アプリ設定機能あり","confidence":1.0,"source":"SendDailyReportUseCase.kt:37-40"}
+{"id":"C-011","type":"inference","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"本番利用可能な状態だが品質保証が不足","confidence":0.8,"source":"C-001〜C-010の事実から推論","reasoning":"機能実装は完了しているがテストがないため、リグレッションリスクが高い"}
+{"id":"C-012","type":"inference","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"セキュリティは基本的な対策済み","confidence":0.7,"source":"SlackWebhookValidator.kt, AndroidManifest.xml","reasoning":"URL検証、権限は適切に設定されているが、暗号化の明示的実装は未確認"}
+{"id":"C-013","type":"unknown","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"パフォーマンス要件","confidence":0.0,"needed_info":"許容可能な起動時間、メモリ使用量の上限","verification_method":"要件ヒアリング or 類似アプリベンチマーク"}
+{"id":"C-014","type":"unknown","timestamp":"2025-01-31T12:00:00Z","run_id":"audit-run-001","claim":"想定ユーザー規模","confidence":0.0,"needed_info":"個人利用のみか、配布想定か","verification_method":"要件ヒアリング"}

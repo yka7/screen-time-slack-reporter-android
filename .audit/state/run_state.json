@@ -1,0 +1,40 @@
+{
+  "last_run_id": "audit-run-001",
+  "last_run_timestamp": "2025-01-31T12:00:00Z",
+  "total_runs": 1,
+  "status": "completed",
+  "result": {
+    "judgment": "conditional_pass",
+    "score": 65,
+    "max_score": 100,
+    "core_functions_passed": 5,
+    "core_functions_total": 5,
+    "quality_checks_passed": 0,
+    "quality_checks_total": 1
+  },
+  "artifacts_generated": [
+    "config/intent.yml",
+    "config/constraints.yml",
+    "config/budget.yml",
+    "log/audit_log.ndjson",
+    "log/claims.ndjson",
+    "analysis/as_is.yml",
+    "analysis/gap.yml",
+    "analysis/verification_scenarios.yml",
+    "proposal/roadmap.md",
+    "proposal/changes/PR-001.md",
+    "proposal/changes/PR-002.md",
+    "proposal/changes/PR-004.md",
+    "verification/scripts/verify_core_functions.py",
+    "verification/test_data/sample_usage.json",
+    "output/summary.md",
+    "output/next_questions.md",
+    "output/self_score.yml",
+    "output/verification_result.json"
+  ],
+  "next_actions": [
+    "PR-001: ユニットテスト追加",
+    "PR-002: コア機能検証スクリプト",
+    "PR-004: GitHub Actions CI/CD"
+  ]
+}

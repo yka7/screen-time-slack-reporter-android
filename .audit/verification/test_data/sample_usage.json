@@ -1,0 +1,47 @@
+{
+  "description": "テスト用アプリ利用データ",
+  "date": "2025-01-31",
+  "timezone": "Asia/Tokyo",
+  "usage_list": [
+    {
+      "packageName": "com.google.android.youtube",
+      "appLabel": "YouTube",
+      "durationMillis": 2700000,
+      "durationMinutes": 45
+    },
+    {
+      "packageName": "com.android.chrome",
+      "appLabel": "Chrome",
+      "durationMillis": 1800000,
+      "durationMinutes": 30
+    },
+    {
+      "packageName": "com.example.game",
+      "appLabel": "ゲームアプリ",
+      "durationMillis": 1500000,
+      "durationMinutes": 25
+    },
+    {
+      "packageName": "jp.naver.line.android",
+      "appLabel": "LINE",
+      "durationMillis": 720000,
+      "durationMinutes": 12
+    },
+    {
+      "packageName": "com.twitter.android",
+      "appLabel": "X",
+      "durationMillis": 600000,
+      "durationMinutes": 10
+    },
+    {
+      "packageName": "com.instagram.android",
+      "appLabel": "Instagram",
+      "durationMillis": 480000,
+      "durationMinutes": 8
+    }
+  ],
+  "total_duration_millis": 7800000,
+  "total_duration_minutes": 130,
+  "target_minutes": 30,
+  "expected_slack_message": "📱 2025/01/31 (金) の利用状況\n合計: 2時間10分 (目標30分との差: +100分)\n\n• YouTube - 45分\n• Chrome - 30分\n• ゲームアプリ - 25分\n• LINE - 12分\n• X - 10分\n• その他 - 8分"
+}
