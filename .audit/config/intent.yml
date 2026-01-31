@@ -18,9 +18,11 @@ assumptions:
   
   - id: "ASM-002"
     field: "quality_attributes.test_coverage"
-    value: "0%（テストコード不在）"
-    reason: "app/src/test, app/src/androidTest ディレクトリが存在しない"
+    value: "部分的（CoreFunctionVerificationTest, SlackWebhookValidatorTest存在）"
+    reason: "app/src/test/java/jp/co/screentime/slackreporter/ に2つのテストファイルを確認"
     confidence: "high"
+    updated_at: "2025-01-31T14:00:00Z"
+    previous_value: "0%（テストコード不在）"
   
   - id: "ASM-003"
     field: "deployment.target_os"

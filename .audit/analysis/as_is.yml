@@ -107,10 +107,10 @@ features:
 # === 品質メトリクス ===
 quality_metrics:
   test_coverage:
-    unit: "0%"
+    unit: "部分的（2ファイル: CoreFunctionVerificationTest.kt, SlackWebhookValidatorTest.kt）"
     integration: "0%"
     ui: "0%"
-    total: "0%"
+    total: "未計測（JaCoCo未設定）"
   
   static_analysis:
     lint_errors: "未実行"
@@ -143,7 +143,19 @@ dependencies:
       artifact: "datastore-preferences"
       version: "1.1.1"
   
-  test: []  # テスト依存関係なし
+  test:
+    - group: "junit"
+      artifact: "junit"
+      version: "4.x"
+    - group: "io.mockk"
+      artifact: "mockk"
+      version: "1.x"
+    - group: "org.jetbrains.kotlinx"
+      artifact: "kotlinx-coroutines-test"
+      version: "1.x"
+    - group: "app.cash.turbine"
+      artifact: "turbine"
+      version: "1.x"
   
   vulnerabilities: []  # 未スキャン
 
@@ -176,8 +188,8 @@ issues:
   - id: "ISS-001"
     severity: "high"
     category: "quality"
-    title: "テストコードが存在しない"
-    description: "ユニットテスト、UIテストが一切ない"
+    title: "テストカバレッジが不十分"
+    description: "ユニットテスト2ファイル存在するが、カバレッジ計測環境（JaCoCo）未設定"
     impact: "リグレッションリスク、リファクタリング困難"
     recommendation: "テスト追加を最優先で実施"
   

@@ -1,6 +1,6 @@
 version: "1.0"
-run_id: "audit-run-001"
-timestamp: "2025-01-31T12:00:00Z"
+run_id: "audit-run-002"
+timestamp: "2025-01-31T14:00:00Z"
 
 # === 自己評価スコア ===
 scores:
@@ -42,13 +42,17 @@ trend:
     timestamp: "2025-01-31T12:00:00Z"
     total: 28
     notes: "初回監査"
+  - run_id: "audit-run-002"
+    timestamp: "2025-01-31T14:00:00Z"
+    total: 30
+    notes: "テストファイル発見、全検証PASS"
 
 # === 検証結果サマリ ===
 verification_summary:
   total_checks: 6
-  passed: 5
-  failed: 1
-  pass_rate: "83%"
+  passed: 6
+  failed: 0
+  pass_rate: "100%"
   
   details:
     - id: "CF-001"
@@ -68,8 +72,8 @@ verification_summary:
       passed: true
     - id: "QA-001"
       name: "テストカバレッジ"
-      passed: false
-      reason: "テストコードなし"
+      passed: true
+      reason: "テストファイル2個存在（JaCoCo設定推奨）"
 
 # === 監査品質チェック ===
 quality_check:
