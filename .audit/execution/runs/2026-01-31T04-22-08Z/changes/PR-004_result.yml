@@ -1,0 +1,26 @@
+pr_id: "PR-004"
+status: "applied"
+applied_at: "2026-01-31T04:27:00Z"
+
+changes:
+  - file: ".github/workflows/android-ci.yml"
+    action: "created"
+    lines_added: 113
+    lines_removed: 0
+    description: "GitHub Actions CI/CDワークフロー"
+
+intermediate_verification:
+  file_created: true
+  yaml_syntax: "valid"
+
+jobs_configured:
+  - name: "build"
+    description: "Debug APKビルド"
+  - name: "lint"
+    description: "Lint実行"
+  - name: "test"
+    description: "ユニットテスト実行"
+  - name: "core-function-verification"
+    description: "コア機能検証テスト実行"
+
+rollback_command: "rm -rf .github/"

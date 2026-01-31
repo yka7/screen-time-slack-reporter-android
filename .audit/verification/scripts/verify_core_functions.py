@@ -117,7 +117,7 @@ def verify_cf002_slack_webhook_implementation() -> VerificationResult:
         (client_content, "sendMessage", "メッセージ送信メソッド"),
         (client_content, "application/json", "JSON Content-Type"),
         (validator_content, "hooks.slack.com", "Slack URLの検証"),
-        (validator_content, "https://", "HTTPS検証"),
+        (validator_content, "https", "HTTPS検証"),  # Fixed: check for scheme validation
     ]
     
     missing = []

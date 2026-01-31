@@ -1,0 +1,34 @@
+pr_id: "PR-001"
+status: "applied"
+applied_at: "2026-01-31T04:25:00Z"
+
+changes:
+  - file: "gradle/libs.versions.toml"
+    action: "modified"
+    lines_added: 14
+    lines_removed: 0
+    description: "テスト依存関係バージョン追加"
+
+  - file: "app/build.gradle.kts"
+    action: "modified"
+    lines_added: 13
+    lines_removed: 0
+    description: "テスト依存関係追加"
+
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/data/slack/SlackWebhookValidatorTest.kt"
+    action: "created"
+    lines_added: 60
+    lines_removed: 0
+    description: "Webhook URL検証テスト"
+
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/CoreFunctionVerificationTest.kt"
+    action: "created"
+    lines_added: 175
+    lines_removed: 0
+    description: "コア機能検証テスト"
+
+intermediate_verification:
+  test_structure: "created"
+  build_validation: "pending (requires gradle sync)"
+
+rollback_command: "git checkout -- gradle/libs.versions.toml app/build.gradle.kts && rm -rf app/src/test/"

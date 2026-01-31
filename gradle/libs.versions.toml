@@ -14,6 +14,12 @@ hiltWork = "1.2.0"
 okhttp = "4.12.0"
 kotlinxCoroutines = "1.8.0"
 ksp = "2.0.0-1.0.21"
+junit = "4.13.2"
+mockk = "1.13.9"
+kotlinxCoroutinesTest = "1.8.0"
+turbine = "1.0.0"
+androidxTestExtJunit = "1.1.5"
+espressoCore = "3.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +44,14 @@ hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWo
 hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWork" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

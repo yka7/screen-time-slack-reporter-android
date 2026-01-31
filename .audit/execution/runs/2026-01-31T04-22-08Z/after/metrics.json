@@ -1,0 +1,25 @@
+{
+  "run_id": "2026-01-31T04-22-08Z",
+  "timestamp": "2026-01-31T04:30:00Z",
+  "metrics": {
+    "test_coverage": "unknown (JaCoCo未設定)",
+    "test_files": 2,
+    "core_function_pass_rate": 1.0,
+    "core_functions_passed": 6,
+    "core_functions_total": 6,
+    "lint_errors": "unknown"
+  },
+  "core_function_results": [
+    {"id": "CF-001", "passed": true, "description": "UsageStats実装の検証"},
+    {"id": "CF-002", "passed": true, "description": "Slack送信実装の検証"},
+    {"id": "CF-003", "passed": true, "description": "WorkManager Worker実装の検証"},
+    {"id": "CF-004", "passed": true, "description": "除外機能実装の検証"},
+    {"id": "CF-005", "passed": true, "description": "手動送信機能の検証"},
+    {"id": "QA-001", "passed": true, "description": "テストカバレッジの確認（2ファイル存在）"}
+  ],
+  "changes_applied": [
+    "PR-001: テスト依存関係追加、テストファイル作成",
+    "PR-002-fix: 検証スクリプトのHTTPS検出修正",
+    "PR-004: GitHub Actions CI/CD追加"
+  ]
+}

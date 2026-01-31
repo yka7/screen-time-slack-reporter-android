@@ -79,4 +79,17 @@ dependencies {
 
     // Debug
     debugImplementation(libs.androidx.ui.tooling)
+
+    // Test
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+
+    // Android Test
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

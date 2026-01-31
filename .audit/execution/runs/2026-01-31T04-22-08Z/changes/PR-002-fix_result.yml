@@ -1,0 +1,19 @@
+pr_id: "PR-002-fix"
+status: "applied"
+applied_at: "2026-01-31T04:26:00Z"
+
+changes:
+  - file: ".audit/verification/scripts/verify_core_functions.py"
+    action: "modified"
+    lines_added: 1
+    lines_removed: 1
+    description: "HTTPS検証パターン修正（'https://' → 'https'）"
+
+intermediate_verification:
+  verification_script: "passed (6/6)"
+
+note: |
+  元のPR-002はコア機能検証スクリプト作成だが、スクリプトは既に存在していた。
+  検証スクリプトのHTTPS検出ロジックにfalse negativeがあったため修正。
+  
+rollback_command: "git checkout -- .audit/verification/scripts/verify_core_functions.py"

@@ -1,0 +1,20 @@
+{
+  "run_id": "2026-01-31T04-22-08Z",
+  "timestamp": "2026-01-31T04:22:08Z",
+  "metrics": {
+    "test_coverage": 0,
+    "test_files": 0,
+    "core_function_pass_rate": 0.67,
+    "core_functions_passed": 4,
+    "core_functions_total": 6,
+    "lint_errors": "unknown"
+  },
+  "core_function_results": [
+    {"id": "CF-001", "passed": true, "description": "UsageStats実装の検証"},
+    {"id": "CF-002", "passed": false, "error": "HTTPS検証リテラル未検出（実装は存在）"},
+    {"id": "CF-003", "passed": true, "description": "WorkManager Worker実装の検証"},
+    {"id": "CF-004", "passed": true, "description": "除外機能実装の検証"},
+    {"id": "CF-005", "passed": true, "description": "手動送信機能の検証"},
+    {"id": "QA-001", "passed": false, "error": "テストコードが存在しません"}
+  ]
+}

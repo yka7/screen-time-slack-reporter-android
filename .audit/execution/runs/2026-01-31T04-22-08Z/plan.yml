@@ -1,0 +1,16 @@
+run_id: "2026-01-31T04-22-08Z"
+scope:
+  prs_to_apply: ["PR-001", "PR-002-fix", "PR-004"]
+  prs_deferred: []
+success_criteria:
+  - id: "SC-001"
+    from: "intent.yml#quality_attributes[0]"
+    target: "テストコードが存在し、実行可能"
+    verification: "test files exist"
+  - id: "SC-002"
+    from: "intent.yml#core_functions"
+    target: "core_function_pass_rate >= 1.0"
+    verification: "verify_core_functions.py"
+rollback_trigger:
+  - "既存コードの破壊"
+  - "ビルドエラー"
