@@ -129,7 +129,7 @@ class HomeViewModelTest {
         every { usageRepository.isUsageAccessGranted() } returns true
         coEvery { getTodayUsageUseCase() } returns emptyList()
         coEvery { sendDailyReportUseCase() } returns SendResult(
-            status = SendStatus.FAILURE,
+            status = SendStatus.FAILED,
             lastSentEpochMillis = null,
             errorMessage = "Network error"
         )
@@ -140,7 +140,7 @@ class HomeViewModelTest {
         viewModel.onClickSendNow()
         advanceUntilIdle()
 
-        assertEquals(SendStatus.FAILURE, viewModel.uiState.value.sendStatus)
+        assertEquals(SendStatus.FAILED, viewModel.uiState.value.sendStatus)
         assertEquals("Network error", viewModel.uiState.value.sendError)
     }
 
@@ -186,6 +186,7 @@ class HomeViewModelTest {
         sendDailyReportUseCase = sendDailyReportUseCase,
         settingsRepository = settingsRepository,
         usageRepository = usageRepository,
-        appLabelResolver = appLabelResolver
+        appLabelResolver = appLabelResolver,
+        ioDispatcher = testDispatcher
     )
 }

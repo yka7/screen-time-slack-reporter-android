@@ -1,0 +1,10 @@
+pr_id: "PR-008"
+status: "applied"
+applied_at: "2025-01-31T14:05:00Z"
+changes:
+  - file: "gradle.properties"
+    action: "modified"
+intermediate_verification:
+  test_result: "pending"
+diff_file: "PR-008_applied.diff"
+rollback_command: "git checkout gradle.properties"

@@ -1,0 +1,14 @@
+pr_id: "PR-001"
+status: "applied"
+applied_at: "2025-01-31T14:10:00Z"
+changes:
+  - file: "gradle/wrapper/gradle-wrapper.properties"
+    action: "modified"
+    details: "Downgraded Gradle to 8.10"
+  - file: "app/build.gradle.kts"
+    action: "modified"
+    details: "Removed explicit JaCoCo version"
+intermediate_verification:
+  test_result: "pending"
+diff_file: "PR-001_applied.diff"
+rollback_command: "git checkout gradle/wrapper/gradle-wrapper.properties app/build.gradle.kts"

@@ -11,10 +11,6 @@ kotlin {
     jvmToolchain(17)  // AGP 8.x と Gradle 8.13 に完全互換
 }
 
-jacoco {
-    toolVersion = "0.8.12"
-}
-
 android {
     namespace = "jp.co.screentime.slackreporter"
     compileSdk = 35

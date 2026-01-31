@@ -1,0 +1,18 @@
+run_id: "2025-01-31T14:00:00Z"
+scope:
+  prs_to_apply: 
+    - "PR-008-java-toolchain-config.md"
+    - "PR-009-viewmodel-tests.md"
+    - "PR-010-repository-tests.md"
+success_criteria:
+  - id: "SC-001"
+    from: "intent.yml#quality_attributes[0]"
+    target: "test_coverage >= 70%"
+    verification: "./gradlew jacocoTestReport"
+  - id: "SC-002"
+    from: "roadmap.md"
+    target: "Java 17 toolchain configured"
+    verification: "./gradlew javaToolchains"
+rollback_trigger:
+  - "Verification failed"
+  - "Build failed"

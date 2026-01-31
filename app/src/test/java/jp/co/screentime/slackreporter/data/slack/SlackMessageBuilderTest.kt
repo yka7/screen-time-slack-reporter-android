@@ -20,44 +20,52 @@ class SlackMessageBuilderTest {
 
     @Before
     fun setup() {
-        resources = mockk {
-            every { getQuantityString(R.plurals.minutes, any(), any()) } answers {
-                val count = secondArg<Int>()
-                "${count}分"
-            }
+        resources = mockk(relaxed = true)
+        context = mockk(relaxed = true)
+        appLabelResolver = mockk()
+
+        // Mock resources
+        every { resources.getQuantityString(R.plurals.minutes, any(), any()) } answers {
+            val count = secondArg<Int>()
+            "${count}分"
         }
         
-        context = mockk {
-            every { this@mockk.resources } returns resources
-            every { getString(R.string.slack_message_header, any(), any(), any()) } answers {
-                val date = secondArg<String>()
-                val total = thirdArg<String>()
-                val diff = arg<String>(3)
-                "📊 $date の利用時間: $total ($diff)"
-            }
-            every { getString(R.string.slack_message_no_usage) } returns "本日の利用はありませんでした"
-            every { getString(R.string.slack_message_app_line, any(), any()) } answers {
-                val appName = secondArg<String>()
-                val duration = thirdArg<String>()
-                "• $appName: $duration"
-            }
-            every { getString(R.string.slack_message_other, any()) } answers {
-                val duration = secondArg<String>()
-                "• その他: $duration"
+        // Mock context.resources
+        every { context.resources } returns resources
+
+        // Mock getString with formatting args
+        // Note: We match specific patterns to ensure correctness
+        every { context.getString(R.string.slack_message_header, *anyVararg()) } answers {
+            val formatArgs = args[1] as Array<*>
+            val date = formatArgs[0] as String
+            val total = formatArgs[1] as String
+            val diff = formatArgs[2] as String
+            "📊 $date の利用時間: $total ($diff)"
+        }
+        every { context.getString(R.string.slack_message_no_usage) } returns "本日の利用はありませんでした"
+        every { context.getString(R.string.slack_message_app_line, *anyVararg()) } answers {
+            val formatArgs = args[1] as Array<*>
+            val appName = formatArgs[0] as String
+            val duration = formatArgs[1] as String
+            "• $appName: $duration"
+        }
+        every { context.getString(R.string.slack_message_other, *anyVararg()) } answers {
+            val formatArgs = args[1] as Array<*>
+            val duration = formatArgs[0] as String
+            "• その他: $duration"
+        }
+
+        // Mock AppLabelResolver
+        every { appLabelResolver.getAppLabel(any()) } answers {
+            val packageName = firstArg<String>()
+            when (packageName) {
+                "com.youtube.android" -> "YouTube"
+                "com.chrome.android" -> "Chrome"
+                "jp.naver.line.android" -> "LINE"
+                else -> packageName.substringAfterLast('.')
             }
         }
-        
-        appLabelResolver = mockk {
-            every { getAppLabel(any()) } answers {
-                val packageName = firstArg<String>()
-                when (packageName) {
-                    "com.youtube.android" -> "YouTube"
-                    "com.chrome.android" -> "Chrome"
-                    "jp.naver.line.android" -> "LINE"
-                    else -> packageName.substringAfterLast('.')
-                }
-            }
-        }
+        every { appLabelResolver.getAppIcon(any()) } returns null
         
         builder = SlackMessageBuilder(context, appLabelResolver)
     }

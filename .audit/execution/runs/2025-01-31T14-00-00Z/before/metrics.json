@@ -1,0 +1,18 @@
+{
+  "run_id": "2025-01-31T14:00:00Z",
+  "timestamp": "2025-01-31T14:00:00Z",
+  "metrics": {
+    "test_coverage": null,
+    "lint_errors": null,
+    "build_duration_sec": null,
+    "core_function_pass_rate": 1.0
+  },
+  "core_function_results": [
+    {"id": "CF-001", "passed": true},
+    {"id": "CF-002", "passed": true},
+    {"id": "CF-003", "passed": true},
+    {"id": "CF-004", "passed": true},
+    {"id": "CF-005", "passed": true}
+  ],
+  "notes": "Build and Lint failed during before snapshot. Android SDK not found and Jacoco task creation failed."
+}

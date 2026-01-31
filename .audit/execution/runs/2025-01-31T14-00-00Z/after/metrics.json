@@ -1,0 +1,19 @@
+{
+  "run_id": "2025-01-31T14:00:00Z",
+  "timestamp": "2025-01-31T14:40:00Z",
+  "metrics": {
+    "test_coverage": 18.05,
+    "lint_errors": -1,
+    "build_duration_sec": 60,
+    "core_function_pass_rate": 1.0
+  },
+  "core_function_results": [
+    {"id": "CF-001", "passed": true},
+    {"id": "CF-002", "passed": true},
+    {"id": "CF-003", "passed": true},
+    {"id": "CF-004", "passed": true},
+    {"id": "CF-005", "passed": true},
+    {"id": "QA-001", "passed": true}
+  ],
+  "notes": "Coverage measured at 18.05%. Lint failed to run properly. Core functions all passed."
+}

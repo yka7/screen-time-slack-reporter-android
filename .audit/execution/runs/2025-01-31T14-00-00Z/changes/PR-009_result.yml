@@ -1,0 +1,14 @@
+pr_id: "PR-009"
+status: "applied"
+applied_at: "2025-01-31T14:20:00Z"
+changes:
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/presentation/home/HomeViewModelTest.kt"
+    action: "modified"
+    details: "Added tests and fixed ioDispatcher injection"
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/presentation/settings/SettingsViewModelTest.kt"
+    action: "verified"
+    details: "Verified existing tests match requirements"
+intermediate_verification:
+  test_result: "passed"
+diff_file: "PR-009_applied.diff"
+rollback_command: "git checkout app/src/test/java/jp/co/screentime/slackreporter/presentation/"

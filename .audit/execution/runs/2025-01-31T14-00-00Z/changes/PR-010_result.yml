@@ -1,0 +1,14 @@
+pr_id: "PR-010"
+status: "applied"
+applied_at: "2025-01-31T14:25:00Z"
+changes:
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/data/repository/SlackRepositoryTest.kt"
+    action: "verified"
+    details: "Verified existing tests match requirements"
+  - file: "app/src/test/java/jp/co/screentime/slackreporter/data/slack/SlackMessageBuilderTest.kt"
+    action: "modified"
+    details: "Fixed MockK issues and verified tests"
+intermediate_verification:
+  test_result: "passed"
+diff_file: "PR-010_applied.diff"
+rollback_command: "git checkout app/src/test/java/jp/co/screentime/slackreporter/data/"

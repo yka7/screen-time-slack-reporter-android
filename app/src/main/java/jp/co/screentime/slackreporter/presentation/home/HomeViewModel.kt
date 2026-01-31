@@ -7,11 +7,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jp.co.screentime.slackreporter.data.repository.SettingsRepository
 import jp.co.screentime.slackreporter.data.repository.UsageRepository
+import jp.co.screentime.slackreporter.di.IoDispatcher
 import jp.co.screentime.slackreporter.domain.model.SendStatus
 import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsageUseCase
 import jp.co.screentime.slackreporter.domain.usecase.SendDailyReportUseCase
 import jp.co.screentime.slackreporter.platform.AppLabelResolver
 import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +36,8 @@ class HomeViewModel @Inject constructor(
     private val sendDailyReportUseCase: SendDailyReportUseCase,
     private val settingsRepository: SettingsRepository,
     private val usageRepository: UsageRepository,
-    private val appLabelResolver: AppLabelResolver
+    private val appLabelResolver: AppLabelResolver,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     companion object {
@@ -77,7 +80,7 @@ class HomeViewModel @Inject constructor(
                     // Bug fix: usageListを毎回取得して最新データを反映
                     val usageList = getTodayUsageUseCase()
                     
-                    val (topApps, totalDurationMillis, otherDurationMillis) = withContext(Dispatchers.IO) {
+                    val (topApps, totalDurationMillis, otherDurationMillis) = withContext(ioDispatcher) {
                         val filteredUsage = usageList.filter { usage ->
                             usage.packageName !in currentSettings.excludedPackages &&
                                 usage.packageName != context.packageName
