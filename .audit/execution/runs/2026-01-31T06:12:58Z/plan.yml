@@ -1,0 +1,20 @@
+run_id: "2026-01-31T06:12:58Z"
+scope:
+  prs_to_apply: ["PR-001-partial"]  # JaCoCo setup from GAP-001
+  prs_deferred: ["PR-002", "PR-004"]  # Deferred due to environment issues
+
+success_criteria:
+  - id: "SC-001"
+    from: "intent.yml#quality_attributes[0]"
+    target: "JaCoCo coverage measurement enabled"
+    verification: "./gradlew jacocoTestReport"
+
+environment_issues:
+  - issue: "Java 24 / Gradle 8.13 / AGP compatibility"
+    impact: "Cannot run ./gradlew test directly"
+    workaround: "Static verification via verify_core_functions.py"
+
+rollback_trigger:
+  - "検証失敗"
+  - "既存テスト失敗"
+  - "ビルドエラー"

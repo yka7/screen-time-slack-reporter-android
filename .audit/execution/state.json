@@ -1,9 +1,10 @@
 {
-  "last_run_id": "2026-01-31T04-22-08Z",
-  "total_runs": 1,
-  "total_prs_applied": 3,
+  "last_run_id": "2026-01-31T06:12:58Z",
+  "total_runs": 2,
+  "total_prs_applied": 4,
   "total_prs_rolled_back": 0,
   "overall_status": "improved",
   "last_core_function_pass_rate": 1.0,
-  "last_test_files": 2
+  "last_test_files": 2,
+  "jacoco_configured": true
 }

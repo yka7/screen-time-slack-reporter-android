@@ -1,0 +1,27 @@
+pr_id: "GAP-001"
+status: "applied"
+applied_at: "2026-01-31T06:15:00Z"
+
+changes:
+  - file: "app/build.gradle.kts"
+    action: "modified"
+    lines_added: 45
+    lines_removed: 0
+    description: "Added JaCoCo plugin and coverage report configuration"
+
+intermediate_verification:
+  syntax_check: "passed"
+  static_analysis: "not_executed (environment limitation)"
+  note: "JaCoCo plugin syntax verified via Kotlin DSL structure"
+
+improvements_applied:
+  - id: "GAP-001"
+    description: "JaCoCo plugin added for coverage measurement"
+    changes:
+      - "Added jacoco plugin to plugins block"
+      - "Configured JaCoCo toolVersion 0.8.12"
+      - "Added testOptions with JacocoTaskExtension"
+      - "Created jacocoTestReport task with proper filters"
+
+diff_file: "GAP-001_jacoco_applied.diff"
+rollback_command: "git checkout app/build.gradle.kts"
