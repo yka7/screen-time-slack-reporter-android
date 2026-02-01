@@ -19,12 +19,6 @@ class SlackRepository @Inject constructor(
      * @return 送信結果
      */
     suspend fun sendMessage(webhookUrl: String, text: String): Result<Unit> {
-        if (webhookUrl.isBlank()) {
-            return Result.failure(IllegalArgumentException("Webhook URL is blank"))
-        }
-        if (text.isBlank()) {
-            return Result.failure(IllegalArgumentException("Message text is blank"))
-        }
         return slackWebhookClient.sendMessage(webhookUrl, text)
     }
 

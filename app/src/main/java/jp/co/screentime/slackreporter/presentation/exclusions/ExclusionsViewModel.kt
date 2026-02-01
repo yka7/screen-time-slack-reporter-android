@@ -7,12 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jp.co.screentime.slackreporter.R
 import jp.co.screentime.slackreporter.data.repository.SettingsRepository
-import jp.co.screentime.slackreporter.di.IoDispatcher
 import jp.co.screentime.slackreporter.domain.usecase.GetAllAppsUseCase
 import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsedAppsUseCase
 import jp.co.screentime.slackreporter.platform.AppLabelResolver
 import jp.co.screentime.slackreporter.presentation.model.UiAppUsage
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +28,7 @@ class ExclusionsViewModel @Inject constructor(
     private val getAllAppsUseCase: GetAllAppsUseCase,
     private val getTodayUsedAppsUseCase: GetTodayUsedAppsUseCase,
     private val settingsRepository: SettingsRepository,
-    private val appLabelResolver: AppLabelResolver,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val appLabelResolver: AppLabelResolver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExclusionsUiState())
@@ -56,7 +53,7 @@ class ExclusionsViewModel @Inject constructor(
                 ) { settings, showExcludedOnly ->
                     Pair(settings, showExcludedOnly)
                 }.collectLatest { (settings, showExcludedOnly) ->
-                    val apps = withContext(ioDispatcher) {
+                    val apps = withContext(Dispatchers.IO) {
                         allApps.map { app ->
                             val usage = usageMap[app.packageName]
                             UiAppUsage(
