@@ -1,0 +1,9 @@
+# local.properties.example
+# このファイルを local.properties にコピーして使用してください
+# local.properties は .gitignore に含まれています
+
+# Android SDK パス（各環境に合わせて設定）
+# macOS: sdk.dir=/Users/<username>/Library/Android/sdk
+# Linux: sdk.dir=/home/<username>/Android/Sdk
+# Windows: sdk.dir=C\:\\Users\\<username>\\AppData\\Local\\Android\\Sdk
+sdk.dir=/path/to/android/sdk
