@@ -121,6 +121,50 @@ Webhook URLは秘匿情報です。URLが漏洩すると、第三者がチャン
 
 データは端末外への送信（Slack通知以外）は行いません。
 
+## 開発者向け
+
+### 環境構築
+
+1. **Android Studioのインストール**
+   - [Android Studio](https://developer.android.com/studio) をダウンロード・インストール
+   - SDK Manager から Android SDK (API 35) をインストール
+
+2. **プロジェクトのクローン**
+
+   ```bash
+   git clone https://github.com/your-repo/screen-time-slack-reporter.git
+   cd screen-time-slack-reporter
+   ```
+
+3. **local.propertiesの設定**
+
+   ```bash
+   cp local.properties.example local.properties
+   # sdk.dir を自分の環境に合わせて編集
+   ```
+
+4. **ビルド確認**
+
+   ```bash
+   ./gradlew assembleDebug
+   ```
+
+### テスト実行
+
+```bash
+# ユニットテスト
+./gradlew testDebugUnitTest
+
+# カバレッジレポート生成
+./gradlew jacocoTestReport
+# レポート: app/build/reports/jacoco/jacocoTestReport/html/index.html
+```
+
+### コードスタイル
+
+- Kotlin公式スタイルガイドに準拠
+- クリーンアーキテクチャ (domain/data/presentation/ui層)
+
 ## ライセンス
 
 MIT License

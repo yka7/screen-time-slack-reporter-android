@@ -26,14 +26,31 @@ jobs:
     
     - name: Check coverage threshold
       run: |
-        COVERAGE=$(grep -oP 'Total.*?(\d+)%' app/build/reports/jacoco/jacocoTestReport/html/index.html | grep -oP '\d+' | head -1)
-        echo "Current coverage: $COVERAGE%"
-        if [ -z "$COVERAGE" ]; then
-          echo "Warning: Could not parse coverage, skipping threshold check"
+        REPORT_XML="app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        if [ ! -f "$REPORT_XML" ]; then
+          echo "Warning: JaCoCo XML report not found at $REPORT_XML; skipping threshold check"
           exit 0
         fi
+
+        LINE_COUNTER=$(grep -oP '<counter type="LINE" missed="\d+" covered="\d+"\s*/>' "$REPORT_XML" | tail -n 1)
+        if [ -z "$LINE_COUNTER" ]; then
+          echo "Warning: Could not find LINE counter in JaCoCo XML; skipping threshold check"
+          exit 0
+        fi
+
+        MISSED=$(echo "$LINE_COUNTER" | grep -oP 'missed="\K\d+')
+        COVERED=$(echo "$LINE_COUNTER" | grep -oP 'covered="\K\d+')
+
+        TOTAL=$((MISSED + COVERED))
+        if [ "$TOTAL" -eq 0 ]; then
+          echo "Warning: Total LINE count is 0; skipping threshold check"
+          exit 0
+        fi
+
+        COVERAGE=$((COVERED * 100 / TOTAL))
+        echo "Current line coverage: ${COVERAGE}% (covered=${COVERED}, missed=${MISSED})"
         if [ "$COVERAGE" -lt 70 ]; then
-          echo "Coverage $COVERAGE% is below threshold 70%"
+          echo "Coverage ${COVERAGE}% is below threshold 70%"
           exit 1
         fi
-        echo "Coverage check passed: $COVERAGE% >= 70%"
+        echo "Coverage check passed: ${COVERAGE}% >= 70%"
