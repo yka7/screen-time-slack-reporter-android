@@ -1,0 +1,8 @@
+{"id":"C-001","type":"fact","claim":"README.mdに「子ども端末の1日の利用時間」と明記","source":"README.md:3","confidence":1.0}
+{"id":"C-002","type":"fact","claim":"minSdk=23が設定されている","source":"app/build.gradle.kts:25","confidence":1.0}
+{"id":"C-003","type":"fact","claim":"JaCoCo設定が存在する","source":"app/build.gradle.kts:7","confidence":1.0}
+{"id":"C-004","type":"fact","claim":"テストファイルが27個存在","source":"app/src/test/**/*Test.kt","confidence":1.0}
+{"id":"C-005","type":"fact","claim":"Webhook URLがPreferencesDataStoreに保存","source":"PreferencesDataStore.kt:72","confidence":1.0}
+{"id":"C-006","type":"inference","claim":"ターゲットユーザーは保護者","source":"C-001","reasoning":"「子ども端末」の管理者は保護者と推測","confidence":0.9}
+{"id":"C-007","type":"inference","claim":"テストカバレッジ目標は80%","source":"業界標準+C-003","reasoning":"JaCoCo設定済みかつ業界標準","confidence":0.7}
+{"id":"C-008","type":"unknown","claim":"実際のテストカバレッジ値","needed_info":"./gradlew jacocoTestReport実行結果","verification_method":"Android SDK環境でビルド実行","confidence":0.0}

@@ -1,0 +1,28 @@
+version: "1.0"
+updated_at: "2025-01-31T12:00:00Z"
+
+# === 制約条件 ===
+
+technical_constraints:
+  language: "Kotlin"
+  min_sdk: 23
+  target_sdk: 35
+  build_system: "Gradle + Kotlin DSL"
+  di_framework: "Hilt"
+  async_framework: "Coroutines + Flow"
+  ui_framework: "Jetpack Compose + Material3"
+  http_client: "OkHttp"
+  persistence: "Preferences DataStore"
+
+team_constraints:
+  size: "1"
+  expertise: "Android development"
+
+delivery_constraints:
+  distribution: "Direct APK install"
+  update_frequency: "Manual update"
+
+security_constraints:
+  webhook_url: "秘匿情報として扱う"
+  local_properties: ".gitignoreに含める"
+  no_hardcoded_secrets: true

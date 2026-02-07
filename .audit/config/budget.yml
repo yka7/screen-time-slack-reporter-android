@@ -1,0 +1,27 @@
+version: "1.0"
+
+# === 監査予算設定 ===
+
+scan_budget:
+  max_files_per_run: 100
+  max_total_tokens: 50000
+
+log_budget:
+  max_log_entries: 500
+  keep_last_n_entries: 300
+
+proposal_budget:
+  max_prs_per_run: 5
+
+execution_budget:
+  max_prs_per_run: 5
+  max_file_changes_per_pr: 10
+  max_lines_per_file: 100
+
+time_budget:
+  max_execution_minutes: 30
+  max_verification_minutes: 10
+
+gc_policy:
+  max_runs_to_keep: 3
+  archive_old_runs: false

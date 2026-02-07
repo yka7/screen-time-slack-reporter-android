@@ -1,0 +1,51 @@
+{
+  "description": "Dummy usage stats data for Core Function Verification",
+  "generated_by": "audit-run-001",
+  "date": "2025-01-31",
+  "usage_stats": [
+    {
+      "packageName": "com.google.android.youtube",
+      "appName": "YouTube",
+      "totalTimeInForeground": 2700000,
+      "durationMinutes": 45
+    },
+    {
+      "packageName": "com.android.chrome",
+      "appName": "Chrome",
+      "totalTimeInForeground": 1800000,
+      "durationMinutes": 30
+    },
+    {
+      "packageName": "com.example.game",
+      "appName": "Game App",
+      "totalTimeInForeground": 1500000,
+      "durationMinutes": 25
+    },
+    {
+      "packageName": "jp.naver.line.android",
+      "appName": "LINE",
+      "totalTimeInForeground": 720000,
+      "durationMinutes": 12
+    }
+  ],
+  "expected_slack_message": "📱 2025/01/31 (金) の利用状況\n合計: 1時間52分 (目標30分との差: +82分)\n\n• YouTube - 45分\n• Chrome - 30分\n• Game App - 25分\n• LINE - 12分",
+  "edge_cases": {
+    "empty_usage": {
+      "input": [],
+      "expected_message_contains": "利用なし"
+    },
+    "single_app": {
+      "input": [
+        {
+          "packageName": "com.android.chrome",
+          "totalTimeInForeground": 600000,
+          "durationMinutes": 10
+        }
+      ]
+    },
+    "excluded_app": {
+      "excluded_packages": ["com.android.chrome"],
+      "expected_filtered_count": 3
+    }
+  }
+}

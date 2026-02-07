@@ -1,0 +1,124 @@
+version: "2.0"
+updated_at: "2025-01-31T12:00:00Z"
+updated_by: "audit-run-001"
+
+# === Mission ===
+mission:
+  target_user: "子どもの端末利用を管理したい保護者"
+  provided_value: "子ども端末の1日のスクリーンタイム（アプリ別利用時間）をSlackへ自動通知し、保護者が利用状況を把握できる"
+  desired_state: "毎日指定時刻に、子ども端末のアプリ別利用時間がSlackチャンネルに自動投稿され、保護者が確認できる状態"
+
+# === Assumptions ===
+assumptions:
+  - id: "ASM-001"
+    field: "mission.target_user"
+    value: "子どもの端末利用を管理したい保護者"
+    reason: "README.md:3 に「子ども端末の1日の利用時間」と明記。Slack通知先は保護者が閲覧するチャンネルと推測"
+    confidence: "high"
+
+  - id: "ASM-002"
+    field: "quality_attributes.test_coverage"
+    value: ">= 80%"
+    reason: "JaCoCo設定済み（app/build.gradle.kts:7）、CI/CDでカバレッジ計測実行（.github/workflows/ci.yml:33）。業界標準の80%を目標と仮定"
+    confidence: "medium"
+
+  - id: "ASM-003"
+    field: "deployment.target_os"
+    value: "Android 6.0+ (API 23+)"
+    reason: "app/build.gradle.kts:25 で minSdk = 23 と定義"
+    confidence: "high"
+
+  - id: "ASM-004"
+    field: "deployment.distribution"
+    value: "APK直接インストール（Google Play非公開）"
+    reason: "README.md:21 にAndroid Studioからの直接インストールのみ記載。Play Store公開の記述なし"
+    confidence: "medium"
+
+  - id: "ASM-005"
+    field: "security.webhook_url_storage"
+    value: "Preferences DataStoreに平文保存"
+    reason: "PreferencesDataStore.kt:72 でWebhook URLをDataStoreに保存。暗号化の実装なし"
+    confidence: "high"
+
+  - id: "ASM-006"
+    field: "architecture.pattern"
+    value: "MVVM + Repository + Clean Architecture"
+    reason: "README.mdに明記。domain/data/presentation/ui層の分離がコードで確認済み"
+    confidence: "high"
+
+# === Core Functions ===
+core_functions:
+  - id: "CF-001"
+    claim: "当日0:00起点のアプリ別利用時間をUsageStatsManagerで取得できる"
+    source: "README.md:7, UsageStatsDataSource.kt:30-49"
+    testable: true
+
+  - id: "CF-002"
+    claim: "1日1回、指定時刻にSlack Incoming WebhookへJSON投稿できる"
+    source: "README.md:8, SlackWebhookClient.kt:29-59, DailySlackReportWorker"
+    testable: true
+    requires: "有効なSlack Webhook URL"
+
+  - id: "CF-003"
+    claim: "除外アプリを設定でき、通知から除外できる"
+    source: "README.md:9, SendDailyReportUseCase.kt:38-40"
+    testable: true
+
+  - id: "CF-004"
+    claim: "手動でいつでもSlack送信できる"
+    source: "README.md:10, HomeViewModel"
+    testable: true
+    requires: "有効なSlack Webhook URL"
+
+  - id: "CF-005"
+    claim: "Webhook URLのバリデーション（hooks.slack.com/services/のみ許可）"
+    source: "SlackWebhookValidator.kt:9-32"
+    testable: true
+
+# === Quality Attributes ===
+quality_attributes:
+  - id: "QA-001"
+    name: "テストカバレッジ"
+    target: ">= 80%"
+    verification:
+      type: "measurement"
+      command: "./gradlew jacocoTestReport"
+      criteria:
+        operator: ">="
+        value: 80
+        unit: "%"
+      interpretation:
+        success_means: "テスト対象コードの80%以上がテストで実行された"
+        failure_means: "テストされていないコードパスが20%以上ある"
+        warning: "JaCoCo設定でUI層・DI層・Worker層・プラットフォーム依存クラスを除外しているため、対象は主にdomain/dataレイヤー"
+
+  - id: "QA-002"
+    name: "Webhook URL検証"
+    target: "不正なURLを拒否する"
+    verification:
+      type: "test"
+      command: "./gradlew test --tests '*SlackWebhookValidatorTest'"
+      criteria:
+        operator: "=="
+        value: "pass"
+        unit: "test_result"
+      interpretation:
+        success_means: "https://hooks.slack.com/services/ 形式のみ受け入れる"
+        failure_means: "不正なURLがバリデーションを通過する可能性がある"
+
+  - id: "QA-003"
+    name: "ビルド成功"
+    target: "assembleDebugが成功する"
+    verification:
+      type: "build"
+      command: "./gradlew assembleDebug"
+      criteria:
+        operator: "=="
+        value: "success"
+        unit: "build_result"
+
+non_goals:
+  - "Google Play Store公開"
+  - "iOS対応"
+  - "複数子ども端末の統合管理"
+  - "リアルタイム監視"

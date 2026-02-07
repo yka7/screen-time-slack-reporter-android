@@ -1,0 +1,133 @@
+[
+  {
+    "function_id": "CF-001",
+    "scenario_name": "UsageStatsManager利用時間取得",
+    "passed": true,
+    "actual_output": {
+      "source_exists": true,
+      "test_exists": true,
+      "usecase_exists": true,
+      "usecase_test_exists": true,
+      "uses_usage_stats_manager": true,
+      "queries_daily_interval": true,
+      "filters_zero_duration": true,
+      "groups_by_package": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "UsageStatsDataSourceが正しく実装され、テストも存在する"
+  },
+  {
+    "function_id": "CF-002",
+    "scenario_name": "Slack Webhook送信",
+    "passed": true,
+    "actual_output": {
+      "client_exists": true,
+      "validator_exists": true,
+      "builder_exists": true,
+      "client_test_exists": true,
+      "validator_test_exists": true,
+      "builder_test_exists": true,
+      "validates_https": true,
+      "validates_host": true,
+      "validates_path": true,
+      "uses_okhttp": true,
+      "posts_json": true,
+      "handles_errors": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "Slack Webhook送信機能が正しく実装され、URL検証・エラーハンドリング・テストが揃っている"
+  },
+  {
+    "function_id": "CF-003",
+    "scenario_name": "除外アプリフィルタリング",
+    "passed": true,
+    "actual_output": {
+      "usecase_exists": true,
+      "usecase_test_exists": true,
+      "settings_model_exists": true,
+      "filters_excluded": true,
+      "applies_filter": true,
+      "has_excluded_packages": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "除外アプリ機能が正しく実装され、SendDailyReportUseCaseでフィルタが適用されている"
+  },
+  {
+    "function_id": "CF-004",
+    "scenario_name": "手動送信",
+    "passed": true,
+    "actual_output": {
+      "viewmodel_exists": true,
+      "viewmodel_test_exists": true,
+      "has_send_function": true,
+      "calls_usecase": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "HomeViewModelから手動送信が可能で、SendDailyReportUseCaseを呼び出している"
+  },
+  {
+    "function_id": "CF-005",
+    "scenario_name": "Webhook URLバリデーション",
+    "passed": true,
+    "actual_output": {
+      "validator_exists": true,
+      "validator_test_exists": true,
+      "checks_https": true,
+      "checks_host": true,
+      "checks_path_prefix": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "Webhook URLバリデーションが正しく実装されている（HTTPS, ホスト, パスプレフィックス検証確認済み）"
+  },
+  {
+    "function_id": "ARCH-001",
+    "scenario_name": "Clean Architectureアーキテクチャ準拠",
+    "passed": true,
+    "actual_output": {
+      "domain_layer_exists": true,
+      "data_layer_exists": true,
+      "presentation_layer_exists": true,
+      "ui_layer_exists": true,
+      "di_layer_exists": true,
+      "workers_layer_exists": true,
+      "domain_has_no_android_imports": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "Clean Architectureに準拠（全レイヤー存在、domain層はAndroid SDK非依存）"
+  },
+  {
+    "function_id": "QA-001",
+    "scenario_name": "テストカバレッジ設定",
+    "passed": true,
+    "actual_output": {
+      "build_file_exists": true,
+      "jacoco_plugin": true,
+      "jacoco_report_task": true,
+      "test_dir_exists": true,
+      "test_files_count_sufficient": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "JaCoCo設定済み、十分なテストファイルが存在（実測カバレッジはビルド実行が必要）"
+  },
+  {
+    "function_id": "SEC-001",
+    "scenario_name": "セキュリティ検証",
+    "passed": true,
+    "actual_output": {
+      "no_hardcoded_webhook": true,
+      "webhook_validator_exists": true,
+      "gitignore_local_properties": true,
+      "gitignore_keystore": true
+    },
+    "expected_output": "全チェック項目がTrue",
+    "error_message": null,
+    "interpretation": "セキュリティ要件を満たしている（Webhook URLハードコードなし、バリデーション実装済み、秘匿ファイルgitignore済み）"
+  }
+]

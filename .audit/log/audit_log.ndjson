@@ -1,0 +1,5 @@
+{"log_id":"J-001","run_id":"audit-run-001","timestamp":"2025-01-31T12:00:00Z","decision":"intent.ymlをREADME.mdとコード分析から生成","rationale":{"evidence":["README.md:3","app/build.gradle.kts:25"],"confidence":"high"}}
+{"log_id":"J-002","run_id":"audit-run-001","timestamp":"2025-01-31T12:01:00Z","decision":"テストカバレッジ目標を80%と仮定","rationale":{"evidence":["業界標準","JaCoCo設定済み"],"confidence":"medium"}}
+{"log_id":"J-003","run_id":"audit-run-001","timestamp":"2025-01-31T12:02:00Z","decision":"Webhook URL平文保存をセキュリティ課題として検出","rationale":{"evidence":["PreferencesDataStore.kt:72"],"confidence":"high"}}
+{"log_id":"J-004","run_id":"audit-run-001","timestamp":"2025-01-31T12:03:00Z","decision":"Worker失敗時通知不足をユーザビリティ課題として追加","rationale":{"evidence":["DailySlackReportWorker.kt:49"],"confidence":"high"}}
+{"log_id":"J-005","run_id":"audit-run-001","timestamp":"2025-01-31T12:04:00Z","decision":"両worktreeの良い点をマージ","rationale":{"evidence":["301be26b:セキュリティ重視","ce6cd22c:アーキテクチャ検証充実"],"confidence":"high"}}

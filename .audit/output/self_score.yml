@@ -1,0 +1,24 @@
+run_id: "audit-run-001"
+timestamp: "2025-01-31T12:00:00Z"
+
+scores:
+  purpose_alignment: 5 # Intentに沿っている
+  evidence_health: 4 # 事実/推測/不明が分離されている
+  feasibility: 5 # 具体的なファイル/手順/テストがある
+  risk_management: 4 # 副作用とロールバックがある
+  verifiability: 4 # 合格基準と計測がある
+  cost_optimization: 4 # 変更範囲と段階が適切
+  collectivization: 4 # チームでレビュー可能な成果物がある
+
+total: 30
+max: 35
+
+trend: [] # 初回実行のため履歴なし
+
+improvement_actions:
+  - priority: 1
+    target: "evidence_health"
+    action: "Android SDK環境でのカバレッジ実測値取得"
+  - priority: 2
+    target: "risk_management"
+    action: "PR適用時の詳細なロールバック手順の文書化"

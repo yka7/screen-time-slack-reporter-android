@@ -1,0 +1,34 @@
+{
+  "description": "Edge cases for Webhook URL validation",
+  "generated_by": "audit-run-001",
+  "test_cases": [
+    {
+      "name": "empty_url",
+      "input": "",
+      "expected_valid": false
+    },
+    {
+      "name": "http_scheme",
+      "input": "http://hooks.slack.com/services/T123/B456/abc",
+      "expected_valid": false,
+      "reason": "HTTPではなくHTTPSが必須"
+    },
+    {
+      "name": "wrong_host",
+      "input": "https://evil.com/services/T123/B456/abc",
+      "expected_valid": false,
+      "reason": "hooks.slack.comではないホスト"
+    },
+    {
+      "name": "wrong_path_prefix",
+      "input": "https://hooks.slack.com/webhooks/T123/B456/abc",
+      "expected_valid": false,
+      "reason": "/services/ではないパス"
+    },
+    {
+      "name": "valid_url",
+      "input": "https://hooks.slack.com/services/T123ABC/B456DEF/ghijklmnop",
+      "expected_valid": true
+    }
+  ]
+}
