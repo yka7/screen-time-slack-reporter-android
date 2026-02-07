@@ -4,6 +4,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import jp.co.screentime.slackreporter.data.repository.UsageRepository
 import jp.co.screentime.slackreporter.domain.model.AppUsage
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -20,7 +21,7 @@ class GetTodayUsageUseCaseTest {
         )
         coEvery { repository.getUsage(any(), any()) } returns mockUsage
 
-        val useCase = GetTodayUsageUseCase(repository)
+        val useCase = GetTodayUsageUseCase(repository, StandardTestDispatcher(testScheduler))
         val result = useCase()
 
         assertEquals(3, result.size)
@@ -39,7 +40,7 @@ class GetTodayUsageUseCaseTest {
         )
         coEvery { repository.getUsage(any(), any()) } returns mockUsage
 
-        val useCase = GetTodayUsageUseCase(repository)
+        val useCase = GetTodayUsageUseCase(repository, StandardTestDispatcher(testScheduler))
         val result = useCase()
 
         assertEquals(2, result.size)
@@ -51,7 +52,7 @@ class GetTodayUsageUseCaseTest {
         val repository = mockk<UsageRepository>()
         coEvery { repository.getUsage(any(), any()) } returns emptyList()
 
-        val useCase = GetTodayUsageUseCase(repository)
+        val useCase = GetTodayUsageUseCase(repository, StandardTestDispatcher(testScheduler))
         val result = useCase()
 
         assertTrue(result.isEmpty())

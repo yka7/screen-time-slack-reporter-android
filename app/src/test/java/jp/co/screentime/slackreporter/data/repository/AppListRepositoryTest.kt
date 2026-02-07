@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -25,7 +26,7 @@ class AppListRepositoryTest {
     @Before
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
-        repository = AppListRepository(context)
+        repository = AppListRepository(context, Dispatchers.IO)
         shadowPackageManager = org.robolectric.Shadows.shadowOf(context.packageManager)
     }
 

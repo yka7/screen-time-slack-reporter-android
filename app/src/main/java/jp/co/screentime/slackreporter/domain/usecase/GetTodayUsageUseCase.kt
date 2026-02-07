@@ -1,8 +1,9 @@
 package jp.co.screentime.slackreporter.domain.usecase
 
 import jp.co.screentime.slackreporter.data.repository.UsageRepository
+import jp.co.screentime.slackreporter.di.IoDispatcher
 import jp.co.screentime.slackreporter.domain.model.AppUsage
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
  * 当日0:00から現在時刻までのアプリ別利用時間を取得する
  */
 class GetTodayUsageUseCase @Inject constructor(
-    private val usageRepository: UsageRepository
+    private val usageRepository: UsageRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
     /**
      * 今日の利用状況を取得
@@ -21,7 +23,7 @@ class GetTodayUsageUseCase @Inject constructor(
      * @return アプリ別利用時間のリスト（利用時間降順）
      */
     suspend operator fun invoke(): List<AppUsage> {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             val calendar = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, 0)
                 set(Calendar.MINUTE, 0)

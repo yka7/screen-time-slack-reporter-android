@@ -12,6 +12,7 @@ import jp.co.screentime.slackreporter.domain.model.SendStatus
 import jp.co.screentime.slackreporter.domain.usecase.GetTodayUsageUseCase
 import jp.co.screentime.slackreporter.domain.usecase.SendDailyReportUseCase
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -39,7 +40,7 @@ class CoreFunctionVerificationTest {
         )
         coEvery { usageRepository.getUsage(any(), any()) } returns mockUsage
         
-        val useCase = GetTodayUsageUseCase(usageRepository)
+        val useCase = GetTodayUsageUseCase(usageRepository, StandardTestDispatcher(testScheduler))
         
         val result = useCase()
         

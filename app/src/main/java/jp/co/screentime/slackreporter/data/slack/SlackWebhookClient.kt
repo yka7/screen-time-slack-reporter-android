@@ -1,6 +1,7 @@
 package jp.co.screentime.slackreporter.data.slack
 
-import kotlinx.coroutines.Dispatchers
+import jp.co.screentime.slackreporter.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -15,7 +16,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class SlackWebhookClient @Inject constructor(
-    private val client: OkHttpClient
+    private val client: OkHttpClient,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
@@ -27,7 +29,7 @@ class SlackWebhookClient @Inject constructor(
      * @return 送信結果
      */
     suspend fun sendMessage(webhookUrl: String, text: String): Result<Unit> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val validatedUrl = SlackWebhookValidator.validate(webhookUrl).getOrElse { error ->
                     return@withContext Result.failure(error)
