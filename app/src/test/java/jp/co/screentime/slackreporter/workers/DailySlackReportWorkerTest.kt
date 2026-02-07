@@ -12,6 +12,7 @@ import jp.co.screentime.slackreporter.domain.model.AppSettings
 import jp.co.screentime.slackreporter.domain.model.SendResult
 import jp.co.screentime.slackreporter.domain.model.SendStatus
 import jp.co.screentime.slackreporter.domain.usecase.SendDailyReportUseCase
+import jp.co.screentime.slackreporter.platform.NotificationHelper
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -30,6 +31,7 @@ class DailySlackReportWorkerTest {
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var usageRepository: UsageRepository
     private lateinit var sendDailyReportUseCase: SendDailyReportUseCase
+    private lateinit var notificationHelper: NotificationHelper
 
     @Before
     fun setUp() {
@@ -37,6 +39,7 @@ class DailySlackReportWorkerTest {
         settingsRepository = mockk()
         usageRepository = mockk()
         sendDailyReportUseCase = mockk()
+        notificationHelper = mockk(relaxed = true)
     }
 
     @Test
@@ -156,7 +159,8 @@ class DailySlackReportWorkerTest {
                 workerParameters,
                 settingsRepository,
                 usageRepository,
-                sendDailyReportUseCase
+                sendDailyReportUseCase,
+                notificationHelper
             )
         }
     }

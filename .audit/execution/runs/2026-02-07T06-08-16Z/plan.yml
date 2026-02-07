@@ -1,0 +1,29 @@
+run_id: "2026-02-07T06-08-16Z"
+scope:
+  prs_to_apply: ["PR-001", "PR-002"]
+  prs_deferred: []
+success_criteria:
+  - id: "SC-001"
+    from: "intent.yml#quality_attributes[0]"
+    target: "test_coverage >= 80%"
+    verification: "./gradlew jacocoTestReport"
+  - id: "SC-002"
+    from: "intent.yml#quality_attributes[1]"
+    target: "Webhook URL Validator pass"
+    verification: "./gradlew test --tests '*SlackWebhookValidatorTest'"
+  - id: "SC-003"
+    from: "intent.yml#quality_attributes[2]"
+    target: "Build success"
+    verification: "./gradlew assembleDebug"
+  - id: "SC-SEC-001"
+    from: "PR-001"
+    target: "EncryptedPreferences implemented"
+    verification: "verify_core_functions.py#verify_security"
+  - id: "SC-ISS-007"
+    from: "PR-002"
+    target: "Worker error notification implemented"
+    verification: "verify_core_functions.py#verify_worker_error_notification"
+rollback_trigger:
+  - "Verification failed"
+  - "Existing tests failed"
+  - "Build failed"

@@ -43,7 +43,7 @@ class NotificationHelper @Inject constructor(
      */
     fun showSlackSendFailureNotification(message: String) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ERROR)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.drawable.ic_error)
             .setContentTitle("Slack送信に失敗しました")
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))

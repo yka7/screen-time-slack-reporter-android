@@ -1,0 +1,7 @@
+execution_budget:
+  max_prs_per_run: 5
+  max_file_changes_per_pr: 10
+time_budget:
+  max_execution_minutes: 30
+gc_policy:
+  max_runs_to_keep: 3
